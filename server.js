@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import { getWeatherData } from "./weatherService.js"; 
+import { FWeatherData } from "./weatherServer.js"; 
 
 dotenv.config();
 
@@ -19,8 +19,8 @@ app.get("/weather", async (req, res) => {
   }
 
   try {
-    const weatherData = await getWeatherData(lat, lon, apiKey);
-    res.json(weatherData);
+    const data = await FWeatherData(lat, lon, apiKey);
+    res.json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
