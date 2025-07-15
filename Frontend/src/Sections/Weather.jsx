@@ -31,26 +31,26 @@ const Weather = () => {
     })
 
     // API Calls
-    const get_current_weather = async (params) => {
+    const get_current_weather = async () => {
         const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/weather`)
         const result = await response.json()
         console.log(result)
         setWeather_data({
-            clouds: result.clouds.all,
-            feels_like: result.main.feels_like,
-            ground_level: result.main.grnd_level,
-            humidity: result.main.humidity,
-            pressure: result.main.pressure,
-            sea_level: result.main.sea_level,
-            temp: result.main.temp,
-            max_temp: result.main.temp_max,
-            min_temp: result.main.temp_min,
-            rain: result.rain?.["1h"],
-            status: result.weather[0].main,
-            location: result.base,
-            wind_deg: result.wind.deg,
-            wind_gust: result.wind.gust,
-            wind_speed: result.wind.speed
+            clouds: result.clouds.all || 0,
+            feels_like: result.main.feels_like || 0.0,
+            ground_level: result.main.grnd_level || 0,
+            humidity: result.main.humidity || 0,
+            pressure: result.main.pressure || 0,
+            sea_level: result.main.sea_level || 0,
+            temp: result.main.temp || 0.0,
+            max_temp: result.main.temp_max || 0.0,
+            min_temp: result.main.temp_min || 0.0,
+            rain: result.rain?.["1h"] || 0.0,
+            status: result.weather[0].main || "",
+            location: result.base || "",
+            wind_deg: result.wind.deg || 0,
+            wind_gust: result.wind.gust || 0.0,
+            wind_speed: result.wind.speed || 0.0,
         })
     }
 

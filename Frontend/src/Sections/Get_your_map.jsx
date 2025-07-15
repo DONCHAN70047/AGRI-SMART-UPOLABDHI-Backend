@@ -29,15 +29,17 @@ const Get_your_map = () => {
             polygon_arr: polygon_arr
         }
         console.log(request_body)
-        const responce = await fetch(`${import.meta.env.VITE_BACKEND_URL}/uploadLocation`, {
+        const responce = await fetch(`${import.meta.env.VITE_BACKEND_URL}/UploadLocation`, {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify(request_body)                        //...............................Changes-1
+            body: JSON.stringify(request_body)
         })
         const result = await responce.json()
+        // console.log(result.message);
         return { responce, result }
+        
     }
 
     // Get Location
