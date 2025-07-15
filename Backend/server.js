@@ -18,14 +18,14 @@ app.get("/weather", async (req, res) => {
   const apiKey = process.env.WEATHER_API_KEY;
 
   if (!lat || !lon) {
-    return res.status(400).json({ error: "Missing lat or lon in query params" });
+    return res.status(200).json({ error: "Missing lat or lon in query params" });
   }
 
   try {
     const data = await FWeatherData(lat, lon, apiKey);
     res.status(200).json({data: data, message: "weather data fetched successfully"});
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(200).json({ error: error.message });
   }
 });
 
@@ -34,7 +34,7 @@ app.post('/uploadLocation', (req, res) => {
   const { coords, polygon_arr } = req.body;
 
   if (!coords || !polygon_arr) {
-    return res.status(400).json({ error: "Missing coordinates or polygon data" });
+    return res.status(200).json({ error: "Missing coordinates or polygon data" });
   }
 
   latestData = {
