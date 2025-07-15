@@ -23,7 +23,7 @@ app.get("/weather", async (req, res) => {
 
   try {
     const data = await FWeatherData(lat, lon, apiKey);
-    res.json(data);
+    res.status(200).json({data: data, message: "weather data fetched successfully"});
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
