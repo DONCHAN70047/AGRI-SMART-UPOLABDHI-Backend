@@ -29,9 +29,7 @@ app.get("/weather", async (req, res) => {
   }
 });
 
-<<<<<<< HEAD
-let latestData = null; // global variable
-
+let latestData = null; 
 app.post('/uploadLocation', (req, res) => {
   const { coords, polygon_arr } = req.body;
 
@@ -42,7 +40,7 @@ app.post('/uploadLocation', (req, res) => {
   latestData = {
     lat: coords.lat,
     lon: coords.lon,
-    radius: req.body.radius || "N/A", // if radius is sent
+    radius: req.body.radius || "N/A", 
     pointCount: polygon_arr.length,
     timestamp: new Date().toLocaleString()
   };
@@ -52,7 +50,6 @@ app.post('/uploadLocation', (req, res) => {
   res.json({ message: "✅ Location data received successfully", data: latestData });
 });
 
-// ✅ Route to check in browser
 app.get("/view", (req, res) => {
   if (!latestData) {
     return res.send("<h3>❌ No data uploaded yet.</h3>");
@@ -74,7 +71,3 @@ app.get("/view", (req, res) => {
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
-=======
-const PORT = process.env.PORT || 8080;
-app.listen(PORT, "0.0.0.0", () => console.log(`✅ Server running on port ${PORT}`));
->>>>>>> 53d2236968ac3e164dd02f7dcdc112ddf8291fcf
