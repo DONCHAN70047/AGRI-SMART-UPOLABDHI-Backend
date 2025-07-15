@@ -34,7 +34,7 @@ const Get_your_map = () => {
             headers: {
                 "Content-Type": "application/json",
             },
-            body: request_body
+            body: JSON.stringify(request_body)                        //...............................Changes-1
         })
         const result = await responce.json()
         return { responce, result }

@@ -2,70 +2,88 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import { FWeatherData } from "./weatherServer.js"; 
+import { exec } from 'child_process';
+
+
+
 
 dotenv.config();
-
 const app = express();
 app.use(cors());
 app.use(express.json());
 let latestLocationData = null;
 dotenv.config();
 
-app.get("/weather", async (req, res) => {
-  console.log('Running weather function.....')
-  const lat = req.query.lat;
-  const lon = req.query.lon;
-  const apiKey = process.env.WEATHER_API_KEY;
+// ...................................................... UploadLocation..............................................
+app.post('/UploadLocation', (req, res) => {
+    console.log('Running UploadLocation function.....')
+    const { coords, polygon_arr } = req.body;
 
-  if (!lat || !lon) {
-    return res.status(200).json({ error: "Missing lat or lon in query params" });
-  }
+    if (!coords || !polygon_arr) {
+        return res.status(200).json({ error: "Missing coordinates or polygon data" });
+    }
 
-  try {
-    const data = await FWeatherData(lat, lon, apiKey);
-    res.status(200).json({data: data, message: "weather data fetched successfully"});
-  } catch (error) {
-    res.status(200).json({ error: error.message });
-  }
+    //console.log('Latitude:', coords.lat);
+    //console.log('Longitude:', coords.lon);
+    //console.log('Polygon Array:', polygon_arr);
+    const lat = coords.lat;
+    const lon = coords.lon;
+    const polygonJSON = JSON.stringify(polygon_arr).replace(/"/g, '\\"');
+
+    const command = `python Database/LocationDataStore.py ${lat} ${lon} "${polygonJSON}"`;
+
+    exec(command, (error, stdout, stderr) => {
+    if (error) {
+      console.error(` Python Error: ${error.message}`);
+      return;
+    }
+
+    
+    res.json({ success: true, message: 'Location data received!' 
+      
+    });
+});
 });
 
-let latestData = null; 
-app.post('/uploadLocation', (req, res) => {
-  const { coords, polygon_arr } = req.body;
+// ...................................................... WeatherDetails..............................................
+app.get("/weather", (req, res) => {
+  console.log("Running weather function.....");
 
-  if (!coords || !polygon_arr) {
-    return res.status(200).json({ error: "Missing coordinates or polygon data" });
-  }
+  const command = "python Database/GetLatestLatLon.py";
 
-  latestData = {
-    lat: coords.lat,
-    lon: coords.lon,
-    radius: req.body.radius || "N/A", 
-    pointCount: polygon_arr.length,
-    timestamp: new Date().toLocaleString()
-  };
+  exec(command, async (error, stdout, stderr) => {
+    if (error) {
+      console.error(`Python Error: ${error.message}`);
+      return res.status(500).json({ error: "Python script failed" });
+    }
 
-  console.log("📥 Received Location Data:", latestData);
+    try {
+      const parsed = JSON.parse(stdout);
+      if (parsed.error) {
+        return res.status(404).json(parsed);
+      }
 
-  res.json({ message: "✅ Location data received successfully", data: latestData });
+      const lat = parsed.lat;
+      const lon = parsed.lon;
+      const apiKey = process.env.WEATHER_API_KEY;
+
+      if (!lat || !lon) {
+        return res.status(400).json({ error: "Missing lat or lon in database" });
+      }
+
+      try {
+        const data = await FWeatherData(lat, lon, apiKey);
+        res.json(data); 
+      } catch (fetchError) {
+        res.status(500).json({ error: fetchError.message });
+      }
+    } catch (parseErr) {
+      console.error("JSON parse error:", parseErr);
+      res.status(500).json({ error: "Failed to parse Python output" });
+    }
+  });
 });
 
-app.get("/view", (req, res) => {
-  if (!latestData) {
-    return res.send("<h3>❌ No data uploaded yet.</h3>");
-  }
-
-  res.send(`
-    <h2>📍 Latest Uploaded Location</h2>
-    <ul>
-      <li><strong>Latitude:</strong> ${latestData.lat}</li>
-      <li><strong>Longitude:</strong> ${latestData.lon}</li>
-      <li><strong>Radius:</strong> ${latestData.radius} ha</li>
-      <li><strong>Points in Polygon:</strong> ${latestData.pointCount}</li>
-      <li><strong>Timestamp:</strong> ${latestData.timestamp}</li>
-    </ul>
-  `);
-});
 
 
 

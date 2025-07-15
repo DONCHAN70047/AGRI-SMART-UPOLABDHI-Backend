@@ -5,10 +5,9 @@
   "main": "index.js",
   "scripts": {
     "server": "node server.js",
-    "client": "cd ../Frontend && pnpm dev",  
+    "client": "cd ../Frontend && pnpm dev",
     "dev": "concurrently \"npm run server\" \"npm run client\""
   },
-  
   "keywords": [],
   "author": "",
   "license": "ISC",
