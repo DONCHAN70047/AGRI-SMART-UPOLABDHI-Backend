@@ -32,7 +32,7 @@ const Weather = () => {
 
     // API Calls
     const get_current_weather = async (params) => {
-        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/get_current_weather`)
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/weather`)
         const result = await response.json()
         console.log(result)
         setWeather_data({
