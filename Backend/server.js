@@ -3,7 +3,8 @@ import cors from "cors";
 import dotenv from "dotenv";
 import { FWeatherData } from "./weatherServer.js"; 
 import { exec } from 'child_process';
-
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcryptjs';       
 
 
 
@@ -13,6 +14,12 @@ app.use(cors());
 app.use(express.json());
 let latestLocationData = null;
 dotenv.config();
+const router = express.Router();
+
+
+
+// ........................................................ For login & Signup token keySetup .................................
+const SECRET_KEY = process.env.TOKENSECRETKEY;
 
 // ...................................................... UploadLocation..............................................
 app.post('/UploadLocation', (req, res) => {
@@ -84,6 +91,30 @@ app.get("/weather", (req, res) => {
   });
 });
 
+// ...................................................... SignUP..............................................
+app.post('/signup', (req, res) => {
+  console.log('Running signup page....')
+  const { name, email, password, phone } = req.body;
+
+  console.log('📩 Signup data received:', { name, email, password, phone });
+  //store database.... 
+
+});
+// ...................................................... Login..............................................
+app.post('/login', (req, res) => {
+  console.log('Running login page....')
+  const {email, password} = req.body;
+
+  console.log(' Login data received:', {email, password});
+
+  /*const token = jwt.sign(
+    { id: id, email: email, name: name },  
+    SECRET_KEY,
+    { expiresIn: '2h' }
+  ); 
+
+  res.json({ token }); */
+}); 
 
 
 

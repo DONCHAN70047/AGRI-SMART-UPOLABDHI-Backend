@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
-import { NavLink, useLocation } from 'react-router';
+import { NavLink, Link, useLocation } from 'react-router-dom';
+//import { NavLink, useLocation } from 'react-router';
+//import { NavLink, Link, useLocation } from 'react-router';
+
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -35,12 +38,18 @@ const Navbar = () => {
 
         {/* Desktop Auth Buttons */}
         <div className="hidden md:flex gap-3">
-          <button className="px-4 py-2 text-white border border-white rounded-xl transition hover:bg-white hover:text-green-700 hover:scale-105">
-            Log in
-          </button>
-          <button className="px-4 py-2 bg-green-500 text-white rounded-xl transition hover:bg-green-600 hover:scale-105">
-            Sign up
-          </button>
+          <Link to="/login">
+            <button className="px-4 py-2 text-white border border-white rounded-xl transition hover:bg-white hover:text-green-700 hover:scale-105">
+              Log in
+            </button>
+          </Link>
+
+          <Link to="/signup">
+            <button className="px-4 py-2 bg-green-500 text-white rounded-xl transition hover:bg-green-600 hover:scale-105">
+              Sign up
+            </button>
+          </Link>
+
         </div>
 
         {/* Hamburger */}
@@ -75,9 +84,12 @@ const Navbar = () => {
           </ul>
 
           <div className="flex flex-col gap-3 mt-4">
-            <button className="px-4 py-2 text-white border border-white rounded-xl transition hover:bg-white hover:text-green-700">
-              Log in
-            </button>
+            <Link to="/login">
+              <button className="px-4 py-2 text-white border border-white rounded-xl transition hover:bg-white hover:text-green-700" onClick={() => setIsOpen(false)}>
+                Log in
+              </button>
+            </Link>
+
             <button className="px-4 py-2 bg-green-500 text-white rounded-xl transition hover:bg-green-600">
               Sign up
             </button>

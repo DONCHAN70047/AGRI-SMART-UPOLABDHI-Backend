@@ -1,6 +1,7 @@
 import { NavLink } from 'react-router-dom'
 import './App.css'
 
+
 function App() {
   return (
     <main className="relative w-full h-screen overflow-hidden text-white font-sans">
