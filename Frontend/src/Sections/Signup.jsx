@@ -1,49 +1,66 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 const Signup = () => {
   const [formData, setFormData] = useState({
     name: '',
-    email: '',
     password: '',
-    phone: '',
+    email: '',
   });
+
+  const [loading, setLoading] = useState(false);
+
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e) => {
-  e.preventDefault();
-
-  try {
-    const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/signup`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(formData),
-    });
-
-    const result = await response.json();
-
-    if (response.ok) {
-      console.log('✅ Signup successful:', result);
-      navigate('/login');
-    } else {
-      console.error('❌ Signup failed:', result.message || result.error);
+  const handleSignup = async () => {
+    if (!formData.name || !formData.password || !formData.email) {
+      return alert('📝 Please fill in all fields');
     }
-  } catch (error) {
-    console.error('❌ Network or server error:', error);
-  }
-};
 
+    setLoading(true);
+
+    try {
+      const payload = {
+        username: formData.name, 
+        password: formData.password,
+        email: formData.email,
+      };
+
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/sign_in/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username: formData.name,
+          password: formData.password,
+          email: formData.email,
+          }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) throw new Error(data.error || 'Signup failed');
+
+      console.log('✅ Signup Success:', data);
+      alert('🎉 Account created successfully!');
+      navigate('/login');
+    } catch (err) {
+      console.error('❌ Signup error:', err.message);
+      alert('❌ ' + err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="relative min-h-screen">
-
-      {/* Background Image */}
+      {/* Background */}
       <img
         src="/Get_your_map_bg.png"
         alt="background"
@@ -55,27 +72,20 @@ const Signup = () => {
         <div className="w-full max-w-md bg-white/30 backdrop-blur-md p-8 rounded-2xl shadow-2xl border-2 border-white">
           <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">📝 Sign Up</h2>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSignup();
+            }}
+            className="space-y-4"
+          >
             <div>
-              <label className="block text-sm text-gray-700">Full Name</label>
+              <label className="block text-sm text-gray-700">Username</label>
               <input
                 type="text"
                 name="name"
                 required
                 value={formData.name}
-                onChange={handleChange}
-                className="w-full px-4 py-2 rounded-xl border border-gray-300 text-gray-800 shadow-sm focus:ring-2 focus:ring-green-400 focus:outline-none"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm text-gray-700">Email</label>
-              <input
-                type="email"
-                name="email"
-                required
-                value={formData.email}
                 onChange={handleChange}
                 className="w-full px-4 py-2 rounded-xl border border-gray-300 text-gray-800 shadow-sm focus:ring-2 focus:ring-green-400 focus:outline-none"
               />
@@ -94,12 +104,12 @@ const Signup = () => {
             </div>
 
             <div>
-              <label className="block text-sm text-gray-700">Phone Number</label>
+              <label className="block text-sm text-gray-700">Email</label>
               <input
-                type="tel"
-                name="phone"
+                type="email"
+                name="email"
                 required
-                value={formData.phone}
+                value={formData.email}
                 onChange={handleChange}
                 className="w-full px-4 py-2 rounded-xl border border-gray-300 text-gray-800 shadow-sm focus:ring-2 focus:ring-green-400 focus:outline-none"
               />
@@ -108,15 +118,12 @@ const Signup = () => {
             <button
               type="submit"
               className="w-full py-2 mt-4 bg-green-600 text-white rounded-xl font-semibold hover:bg-green-700 transition"
+              disabled={loading}
             >
-              Create Account
+              {loading ? 'Creating Account...' : 'Create Account'}
             </button>
           </form>
-            
 
-
-
-          {/* 🔁 Login link */}
           <div className="text-center mt-6 text-sm text-gray-800">
             Already have an account?{' '}
             <Link to="/login" className="text-green-700 hover:underline font-semibold">

@@ -32,3 +32,5 @@ class WeatherSerializer(serializers.ModelSerializer):
         model = Weather
         fields = ['user_id', 'status', 'location', 'temp', 'feels_like', 'min_temp', 'max_temp', 'wind_speed', 'wind_gust', 'wind_degree', 'pressure', 'humidity', 'sea_level', 'ground_level', 'rain', 'clouds']
         read_only_fields = []
+
+

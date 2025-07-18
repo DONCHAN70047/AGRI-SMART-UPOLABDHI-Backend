@@ -2,67 +2,67 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 
 const Login = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [formData, setFormData] = useState({
+    username: '',
+    password: '',
+  });
+
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleLogin = async (e) => {
+    e.preventDefault(); // prevent form reload
+
+    if (!formData.username || !formData.password) {
+      return alert('📝 Please fill in all fields');
+    }
+
+    setLoading(true);
+    setError('');
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/login`, {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/log_in/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify(formData),
       });
 
       const data = await response.json();
 
-      if (response.ok) {
-        localStorage.setItem('token', data.token);
-        const token = localStorage.getItem('token');
-        const protectedRes = await fetch(`${import.meta.env.VITE_BACKEND_URL}/protected`, {
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
-        });
+      if (!response.ok) throw new Error(data.error || 'Login failed');
 
-        const protectedData = await protectedRes.json();
-        console.log('Protected data:', protectedData);
-
-        navigate('/Dashboard');
-        } else {
-            setError(data.error || 'Login failed');
-        }
-        } catch (err) {
-            console.error('Login error:', err);
-            setError(' Something went wrong. Please try again later.');
-        }
-    };
+      console.log('✅ Login Success:', data);
+      alert('🎉 Logged in successfully!');
+      navigate('/Get_your_map');
+    } catch (err) {
+      console.error('❌ Login error:', err.message);
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="relative min-h-screen">
-
-      {/* ✅ Top-Right Buttons Container */}
+      {/* ✅ Top-Right Buttons */}
       <div className="absolute top-6 right-6 flex gap-3 z-10">
-        <Link
-          to="/Dashboard"
-          className="bg-green-600 text-white px-4 py-2 rounded-xl shadow-md hover:bg-green-700 transition"
-        >
+        <Link to="/Dashboard" className="bg-green-600 text-white px-4 py-2 rounded-xl shadow-md hover:bg-green-700 transition">
           Go to Dashboard
         </Link>
-        <Link
-          to="/Get_your_map"
-          className="bg-green-600 text-white px-4 py-2 rounded-xl shadow-md hover:bg-green-700 transition"
-        >
+        <Link to="/Get_your_map" className="bg-green-600 text-white px-4 py-2 rounded-xl shadow-md hover:bg-green-700 transition">
           Pin Your Location
         </Link>
       </div>
 
-      {/* Background Image */}
+      {/* Background */}
       <img
         src="/Get_your_map_bg.png"
         alt="background"
@@ -79,34 +79,39 @@ const Login = () => {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleLogin} className="space-y-4">
+            {/* Username */}
             <div>
-              <label className="block text-sm text-gray-700">Email</label>
+              <label className="block text-sm text-gray-700">Username</label>
               <input
-                type="email"
+                type="text"
+                name="username"
                 required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={formData.username}
+                onChange={handleChange}
                 className="w-full px-4 py-2 rounded-xl border border-gray-300 text-gray-800 shadow-sm focus:ring-2 focus:ring-green-400 focus:outline-none"
               />
             </div>
 
+            {/* Password */}
             <div>
               <label className="block text-sm text-gray-700">Password</label>
               <input
                 type="password"
+                name="password"
                 required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                value={formData.password}
+                onChange={handleChange}
                 className="w-full px-4 py-2 rounded-xl border border-gray-300 text-gray-800 shadow-sm focus:ring-2 focus:ring-green-400 focus:outline-none"
               />
             </div>
 
             <button
               type="submit"
+              disabled={loading}
               className="w-full py-2 mt-4 bg-green-600 text-white rounded-xl font-semibold hover:bg-green-700 transition"
             >
-              Log In
+              {loading ? 'Logging in...' : 'Log In'}
             </button>
           </form>
 

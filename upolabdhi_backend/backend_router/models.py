@@ -1,5 +1,6 @@
 from django.db import models
 
+
 # Create your models here.
 class Polygon(models.Model):
     user_id = models.CharField(max_length=50)
@@ -31,3 +32,6 @@ class Weather(models.Model):
 
     class Meta:
         ordering = ['user_id']
+
+
+
