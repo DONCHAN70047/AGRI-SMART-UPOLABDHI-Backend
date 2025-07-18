@@ -7,11 +7,11 @@ import os
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
-model_path = os.path.join(BASE_DIR, "DisesDetectModel.keras")
+model_path = os.path.join(BASE_DIR, "DisesDetectModel16.keras")
 model = load_model(model_path)
 
 
-class_map_path = os.path.join(BASE_DIR, "ClassMapDisesDetectModel.pkl")
+class_map_path = os.path.join(BASE_DIR, "ClassMapDisesDetectModel16.pkl")
 with open(class_map_path, 'rb') as f:
     class_indices = pickle.load(f)
 
