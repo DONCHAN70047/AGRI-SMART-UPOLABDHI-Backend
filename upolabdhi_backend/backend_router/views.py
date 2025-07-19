@@ -22,10 +22,6 @@ from .MLModel.MLapp import predict_disease
 
 import requests
 from PIL import Image
-from io import BytesIO
-import torch  
-import torchvision.transforms as transforms
-
 
 
 secure = os.environ.get('SECURE')
