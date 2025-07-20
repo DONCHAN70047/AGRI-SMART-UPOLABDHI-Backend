@@ -11,7 +11,7 @@ from django.contrib.auth.models import User
 from rest_framework.permissions import AllowAny
 from rest_framework.decorators import permission_classes
 from django.contrib.auth.hashers import make_password
-from rest_framework.permissions import DjangoModelPermissionsOrAnonReadOnly
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.permissions import AllowAny
 from rest_framework.parsers import MultiPartParser
 from rest_framework.decorators import parser_classes
@@ -120,6 +120,7 @@ def weather(request):
 # ....................................................................... sign_in ............................................ 
 @api_view(['POST'])
 def sign_in(request):
+    # permission_classes = [IsAuthenticated]  # ✅ Correct
     try:
         username = request.data.get('username')
         password = request.data.get('password')

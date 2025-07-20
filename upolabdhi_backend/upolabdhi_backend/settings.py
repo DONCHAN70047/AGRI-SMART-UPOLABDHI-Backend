@@ -10,7 +10,12 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+import os
 from pathlib import Path
+from dotenv import load_dotenv
+from pprint import pprint
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,16 +25,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-*&te%_8i+x43j!jz7tc_1ffh^zy-))(v7!@9!&i5%ubiu+zsni'
+SECRET_KEY = os.getenv('SECRET_KEY')
+pprint(SECRET_KEY)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG')
+pprint(DEBUG)
 
-ALLOWED_HOSTS = ['http://localhost:5173', '127.0.0.1', 'localhost']
+# ALLOWED_HOSTS = ["http://localhost:5173"]
+ALLOWED_HOSTS = ['*']
+pprint(ALLOWED_HOSTS)
 
-#CORS_ALLOWED_ORIGINS = [
-#    "http://localhost:5173",
-#]
 #CORS_ALLOW_CREDENTIALS = True  # since you're using cookies for auth
 
 
@@ -50,27 +56,14 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-
-    'django.middleware.common.CommonMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
-]
-
-CORS_ALLOW_HEADERS = [
-    'accept',
-    'accept-encoding',
-    'authorization',
-    'content-type',
-    'dnt',
-    'origin',
-    'user-agent',
-    'x-csrftoken',
-    'x-requested-with',
 ]
 
 CORS_ALLOW_METHODS = [
@@ -82,19 +75,21 @@ CORS_ALLOW_METHODS = [
     'PUT',
 ]
 
+CORS_ALLOW_CREDENTIALS = True
 
 ROOT_URLCONF = 'upolabdhi_backend.urls'
 
+CORS_ALLOWED_ORIGINS = [
+   "http://localhost:5173",
+]
+
 REST_FRAMEWORK = {
-    # Use Django's standard `django.contrib.auth` permissions,
-    # or allow read-only access for unauthenticated users.
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.AllowAny',
+    'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.AllowAny',  
-    ]
+        'rest_framework.permissions.AllowAny',
+    ],
 }
 
 TEMPLATES = [
