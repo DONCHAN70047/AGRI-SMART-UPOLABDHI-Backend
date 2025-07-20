@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { UserContext } from '../context/UserContext';
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -10,6 +11,7 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const { user, setUser } = useContext(UserContext)
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -27,12 +29,14 @@ const Login = () => {
     setError('');
 
     try {
+      console.log(formData)
       const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/log_in/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(formData),
+        credentials: 'include'
       });
 
       const data = await response.json();
@@ -40,6 +44,9 @@ const Login = () => {
       if (!response.ok) throw new Error(data.error || 'Login failed');
 
       console.log('✅ Login Success:', data);
+      sessionStorage.setItem('refresh_token', data.refresh)
+      sessionStorage.setItem('access_token', data.access)
+      setUser(data)
       alert('🎉 Logged in successfully!');
       navigate('/Get_your_map');
     } catch (err) {

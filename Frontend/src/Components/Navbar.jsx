@@ -1,5 +1,8 @@
-import React, { useState } from 'react';
-import { NavLink, Link, useLocation } from 'react-router-dom';
+import React, { useContext, useState, useEffect, useCallback } from 'react';
+import { NavLink, Link, useLocation, data } from 'react-router-dom';
+import { UserContext } from '../context/UserContext';
+import Sign_out from './Sign_out';
+import { get_current_user } from './Functions';
 //import { NavLink, useLocation } from 'react-router';
 //import { NavLink, Link, useLocation } from 'react-router';
 
@@ -7,7 +10,25 @@ import { NavLink, Link, useLocation } from 'react-router-dom';
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
+  // Declare current user
+  const { user, setUser } = useContext(UserContext)
   const location = useLocation()
+
+  const fetchUser = useCallback(async () => {
+    try {
+      const data = await get_current_user();
+      setUser(data);
+    } catch (err) {
+      console.error("Failed to fetch user:", err);
+      setUser(null);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchUser();
+  }, [fetchUser]);
+
+  console.log(user)
 
   return (
     <nav className="w-[95%] fixed top-5 left-1/2 transform -translate-x-1/2 z-50 bg-white/10 backdrop-blur-md border-b border-white shadow-md rounded-2xl">
@@ -37,20 +58,23 @@ const Navbar = () => {
         </ul>
 
         {/* Desktop Auth Buttons */}
-        <div className="hidden md:flex gap-3">
-          <Link to="/login">
-            <button className="px-4 py-2 text-white border border-white rounded-xl transition hover:bg-white hover:text-green-700 hover:scale-105">
-              Log in
-            </button>
-          </Link>
+        {user ? (
+          <div><Sign_out /></div>
+        ) : (
+          <div className="hidden md:flex gap-3">
+            <Link to="/login">
+              <button className="px-4 py-2 text-white border border-white rounded-xl transition hover:bg-white hover:text-green-700 hover:scale-105">
+                Log in
+              </button>
+            </Link>
 
-          <Link to="/signup">
-            <button className="px-4 py-2 bg-green-500 text-white rounded-xl transition hover:bg-green-600 hover:scale-105">
-              Sign up
-            </button>
-          </Link>
-
-        </div>
+            <Link to="/signup">
+              <button className="px-4 py-2 bg-green-500 text-white rounded-xl transition hover:bg-green-600 hover:scale-105">
+                Sign up
+              </button>
+            </Link>
+          </div>
+        )}
 
         {/* Hamburger */}
         <button className="md:hidden text-white focus:outline-none" onClick={() => setIsOpen(!isOpen)}>
@@ -83,17 +107,22 @@ const Navbar = () => {
             ))}
           </ul>
 
-          <div className="flex flex-col gap-3 mt-4">
-            <Link to="/login">
-              <button className="px-4 py-2 text-white border border-white rounded-xl transition hover:bg-white hover:text-green-700" onClick={() => setIsOpen(false)}>
-                Log in
-              </button>
-            </Link>
 
-            <button className="px-4 py-2 bg-green-500 text-white rounded-xl transition hover:bg-green-600">
-              Sign up
-            </button>
-          </div>
+          {user ? (
+            <div><Sign_out /></div>
+          ) : (
+            <div className="flex flex-col gap-3 mt-4">
+              <Link to="/login">
+                <button className="px-4 py-2 text-white border border-white rounded-xl transition hover:bg-white hover:text-green-700" onClick={() => setIsOpen(false)}>
+                  Log in
+                </button>
+              </Link>
+
+              <button className="px-4 py-2 bg-green-500 text-white rounded-xl transition hover:bg-green-600">
+                Sign up
+              </button>
+            </div>
+          )}
         </div>
       )}
     </nav>

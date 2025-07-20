@@ -1,8 +1,12 @@
 import { NavLink } from 'react-router-dom'
 import './App.css'
-
+// import { UserContext } from '../context/UserContext';
+// import { useContext, useEffect } from 'react';
 
 function App() {
+
+  // const {user, setUser} = useContext(UserContext)
+
   return (
     <main className="relative w-full h-screen overflow-hidden text-white font-sans">
       {/* Background Image */}
