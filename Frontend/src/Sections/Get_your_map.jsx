@@ -3,18 +3,20 @@ import Navbar from '../Components/Navbar';
 import { get_lat_lon } from '../Operations/Lat_Lon';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import { get_current_user } from '../Components/Functions';
 
 const Get_your_map = () => {
   const [message, setMessage] = useState('');
   const [latitude, setLatitude] = useState('');
   const [longitude, setLongitude] = useState('');
   const [radius, setRadius] = useState('');
+  const [user, setUser] = useState(null)
 
   const mapRef = useRef(null);
   const polygonRef = useRef(null);
 
   const uploadLocation = async () => {
-    if (!latitude || !longitude ) {
+    if (!latitude || !longitude) {
       setMessage('❗ Please get your location and select radius first');
       return;
     }
@@ -68,9 +70,9 @@ const Get_your_map = () => {
   };
 
   const generateCircleAroundPoint = (latitude, longitude, radiusHectares) => {
-    const EARTH_RADIUS = 6371000; 
+    const EARTH_RADIUS = 6371000;
     const areaInSqMeters = radiusHectares * 10000;
-    const radius = Math.sqrt(areaInSqMeters / Math.PI); 
+    const radius = Math.sqrt(areaInSqMeters / Math.PI);
     const numPoints = Math.max(24, Math.floor(radius / 5));
 
     const coords = [];
@@ -133,7 +135,7 @@ const Get_your_map = () => {
 
       <main className="pt-[100px] px-6 min-h-[calc(100vh-100px)] flex items-center">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-10 w-full">
-          
+
           {/* Left Box */}
           <div className="w-full md:w-1/2 min-h-[400px] p-6 bg-white/30 backdrop-blur-lg rounded-2xl border-2 border-white shadow-2xl flex flex-col items-center justify-around gap-6">
             <h2 className="text-3xl font-bold text-gray-800">🌍 Get your Map 🌍</h2>

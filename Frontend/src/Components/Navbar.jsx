@@ -1,7 +1,8 @@
-import React, { useContext, useState, useEffect } from 'react';
-import { NavLink, Link, useLocation } from 'react-router-dom';
+import React, { useContext, useState, useEffect, useCallback } from 'react';
+import { NavLink, Link, useLocation, data } from 'react-router-dom';
 import { UserContext } from '../context/UserContext';
 import Sign_out from './Sign_out';
+import { get_current_user } from './Functions';
 //import { NavLink, useLocation } from 'react-router';
 //import { NavLink, Link, useLocation } from 'react-router';
 
@@ -13,30 +14,21 @@ const Navbar = () => {
   const { user, setUser } = useContext(UserContext)
   const location = useLocation()
 
-  useEffect(() => {
-  const fetchUser = async () => {
+  const fetchUser = useCallback(async () => {
     try {
-      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/current_user/`, {
-        method: 'GET',
-        credentials: 'include',
-      });
-
-      if (res.ok) {
-        const data = await res.json();
-        setUser(data); // or setUsername(data.username)
-      } else {
-        setUser(null);
-      }
+      const data = await get_current_user();
+      setUser(data);
     } catch (err) {
       console.error("Failed to fetch user:", err);
       setUser(null);
     }
-  };
+  }, []);
 
-  fetchUser();
-}, []);
+  useEffect(() => {
+    fetchUser();
+  }, [fetchUser]);
 
-console.log(user)
+  console.log(user)
 
   return (
     <nav className="w-[95%] fixed top-5 left-1/2 transform -translate-x-1/2 z-50 bg-white/10 backdrop-blur-md border-b border-white shadow-md rounded-2xl">

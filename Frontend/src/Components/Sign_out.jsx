@@ -7,14 +7,21 @@ const Sign_out = () => {
 
     const handleSignOut = async () => {
         const responce = await fetch(`${import.meta.env.VITE_BACKEND_URL}/blacklist/`, {
-            method: 'DELETE',
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            credentials: 'include'
+            credentials: 'include',
+            body: JSON.stringify({"refresh": sessionStorage.getItem('refresh_token')})
         })
         const result = await responce.json()
         console.log(result);
+
+        if (responce.ok) {
+            sessionStorage.removeItem('access_token')
+            sessionStorage.removeItem('refresh_token')
+        }
+
         navigate('/')
         return { responce, result }
     };

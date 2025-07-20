@@ -29,13 +29,14 @@ const Login = () => {
     setError('');
 
     try {
+      console.log(formData)
       const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/log_in/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        credentials: 'include',
         body: JSON.stringify(formData),
+        credentials: 'include'
       });
 
       const data = await response.json();
@@ -43,7 +44,9 @@ const Login = () => {
       if (!response.ok) throw new Error(data.error || 'Login failed');
 
       console.log('✅ Login Success:', data);
-      setUser({ name: data.username })
+      sessionStorage.setItem('refresh_token', data.refresh)
+      sessionStorage.setItem('access_token', data.access)
+      setUser(data)
       alert('🎉 Logged in successfully!');
       navigate('/Get_your_map');
     } catch (err) {
