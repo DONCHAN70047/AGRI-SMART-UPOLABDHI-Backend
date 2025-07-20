@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { UserContext } from '../context/UserContext';
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -10,6 +11,7 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const { user, setUser } = useContext(UserContext)
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -32,6 +34,7 @@ const Login = () => {
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include',
         body: JSON.stringify(formData),
       });
 
@@ -40,6 +43,7 @@ const Login = () => {
       if (!response.ok) throw new Error(data.error || 'Login failed');
 
       console.log('✅ Login Success:', data);
+      setUser({ name: data.username })
       alert('🎉 Logged in successfully!');
       navigate('/Get_your_map');
     } catch (err) {
