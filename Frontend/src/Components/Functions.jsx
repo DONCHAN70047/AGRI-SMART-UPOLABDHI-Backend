@@ -47,3 +47,17 @@ export async function get_current_user() {
         console.error("Unauthorized or error:", response.status);
     }
 }
+
+export const getWeatherStatus = ({ min, max, humidity, rain }) => {
+  const avg = (min + max) / 2;
+
+  if (rain > 0 && humidity > 65 && avg > 25) return "Monsoon";
+  if (rain > 0) return "Rainy";
+  if (avg <= 10) return "Freezing";
+  if (avg <= 18) return "Cold";
+  if (avg <= 25) return "Pleasant";
+  if (avg <= 30) return "Warm";
+  if (avg <= 35) return "Hot";
+  if (avg <= 40) return "Very Hot";
+  return "Scorching";
+};
