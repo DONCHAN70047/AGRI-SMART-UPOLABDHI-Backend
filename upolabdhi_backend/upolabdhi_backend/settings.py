@@ -32,7 +32,7 @@ pprint(SECRET_KEY)
 DEBUG = os.getenv('DEBUG')
 pprint(DEBUG)
 
-# ALLOWED_HOSTS = ["http://localhost:5173"]
+# ALLOWED_HOSTS = ["http://localhost:5173", "localhost"]
 ALLOWED_HOSTS = ['*']
 pprint(ALLOWED_HOSTS)
 
@@ -52,7 +52,9 @@ INSTALLED_APPS = [
 
     'backend_router',
     'corsheaders',
-    'rest_framework'
+    'rest_framework',
+    'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist'
 ]
 
 MIDDLEWARE = [
