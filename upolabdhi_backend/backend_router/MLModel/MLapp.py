@@ -3,6 +3,8 @@ import pickle
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing import image
 import os
+import google.generativeai as genai    # RT-Import : google-generativeai
+
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -17,6 +19,13 @@ with open(class_map_path, 'rb') as f:
 
 index_to_class = {v: k for k, v in class_indices.items()}
 
+def Sugesstion(DisesName) :
+    genai.configure(api_key=os.getenv("DisesSugesstionAPIKey")
+)
+    model = genai.GenerativeModel(model_name="models/gemini-1.5-flash")
+    response = model.generate_content(f"Our dises name is : {DisesName}  so, you give me point wise sugesstion of  how to came dises & how to servive from this diises..")
+    return response.text
+
 
 def predict_disease(image_file):
     img = image_file.resize((128, 128))
@@ -27,10 +36,11 @@ def predict_disease(image_file):
     predicted_index = np.argmax(predictions[0])
     predicted_class = index_to_class[predicted_index]
 
-  
-    
+    PredictDisesSugesstion = Sugesstion(predicted_class)
+
+
 
     return {
         "disease": predicted_class,
-        "suggestion": ["No suggestions available....."]
+        "suggestion": [PredictDisesSugesstion]
     }
