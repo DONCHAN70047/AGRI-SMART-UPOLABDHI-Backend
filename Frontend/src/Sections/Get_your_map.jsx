@@ -4,6 +4,7 @@ import { get_lat_lon } from '../Operations/Lat_Lon';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { get_current_user } from '../Components/Functions';
+import Footer from '../Components/Footer';
 
 const Get_your_map = () => {
   const [message, setMessage] = useState('');
@@ -145,7 +146,7 @@ const Get_your_map = () => {
         className="absolute w-full h-full object-cover -z-50"
       />
 
-      <main className="pt-[100px] px-6 min-h-[calc(100vh-100px)] flex items-center">
+      <main className="pt-[100px] px-6 min-h-[calc(100vh)] flex items-center">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-10 w-full">
 
           {/* Left Box */}
@@ -196,6 +197,7 @@ const Get_your_map = () => {
           </div>
         </div>
       </main>
+      <Footer />
     </div>
   );
 };

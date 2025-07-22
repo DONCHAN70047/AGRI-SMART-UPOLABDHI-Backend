@@ -1,5 +1,6 @@
 import React from 'react'
 import Navbar from '../Components/Navbar'
+import Footer from '../Components/Footer';
 
 const Nearby_market = () => {
     return (
@@ -14,6 +15,7 @@ const Nearby_market = () => {
             <div className='pt-30 px-10'>
                 hello, you are in Nearby_market
             </div>
+            <Footer />
         </div>
     )
 }

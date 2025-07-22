@@ -17,15 +17,12 @@ from rest_framework.parsers import MultiPartParser
 from rest_framework.decorators import parser_classes
 from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_201_CREATED, HTTP_500_INTERNAL_SERVER_ERROR
 from .MLModel.MLapp import predict_disease
-<<<<<<< HEAD
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
 
 
 
 import requests
-=======
->>>>>>> 8de95fd338797d8048d14dab0091d0831d13d536
 from PIL import Image
 from pprint import pprint
 

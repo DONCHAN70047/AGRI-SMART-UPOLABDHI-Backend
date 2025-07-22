@@ -77,57 +77,68 @@ const Login = () => {
       />
 
       <main className="pt-[100px] px-6 min-h-[calc(100vh-100px)] flex items-center justify-center">
-        <div className="w-full max-w-md bg-white/30 backdrop-blur-md p-8 rounded-2xl shadow-2xl border-2 border-white">
-          <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">🔐 Log In</h2>
+        <div className="w-full max-w-2xl  backdrop-blur-md p-0 md:p-8 rounded-2xl shadow-2xl border-2 border-white flex flex-col md:flex-row items-center">
+          {/* Image side */}
+          <div className="flex-1 flex items-center justify-center p-6">
+            <img
+              src="/Farmer_2.png" 
+              alt="Farmer"
+              className="w-48 h-89 max-w-full rounded-2xl shadow-lg border-2 border-white object-cover"
+            />
+          </div>
+          {/* Form side */}
+          <div className="flex-1 p-13">
+            <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">🔐 Log In</h2>
 
-          {error && (
-            <div className="text-red-600 text-center mb-4 text-sm font-medium">
-              {error}
+            {error && (
+              <div className="text-red-600 text-center mb-4 text-sm font-medium">
+                {error}
+              </div>
+            )}
+
+            <form onSubmit={handleLogin} className="space-y-4">
+              {/* Username */}
+              <div>
+                <label className="block text-sm text-gray-700">Username</label>
+                <input
+                  type="text"
+                  name="username"
+                  required
+                  value={formData.username}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 rounded-xl border border-gray-300 text-gray-800 shadow-sm focus:ring-2 focus:ring-green-400 focus:outline-none"
+                />
+              </div>
+
+              {/* Password */}
+              <div>
+                <label className="block text-sm text-gray-700">Password</label>
+                <input
+                  type="password"
+                  name="password"
+                  required
+                  value={formData.password}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 rounded-xl border border-gray-300 text-gray-800 shadow-sm focus:ring-2 focus:ring-green-400 focus:outline-none"
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full py-2 mt-4 bg-green-600 text-white rounded-xl font-semibold hover:bg-green-700 transition"
+              >
+                {loading ? 'Logging in...' : 'Log In'}
+              </button>
+            </form>
+
+            {/* Sign Up Suggestion */}
+            <div className="text-center mt-6 text-sm text-gray-800">
+              Don’t have an account?{' '}
+              <Link to="/signup" className="text-green-700 hover:underline font-semibold">
+                Sign up here
+              </Link>
             </div>
-          )}
-
-          <form onSubmit={handleLogin} className="space-y-4">
-            {/* Username */}
-            <div>
-              <label className="block text-sm text-gray-700">Username</label>
-              <input
-                type="text"
-                name="username"
-                required
-                value={formData.username}
-                onChange={handleChange}
-                className="w-full px-4 py-2 rounded-xl border border-gray-300 text-gray-800 shadow-sm focus:ring-2 focus:ring-green-400 focus:outline-none"
-              />
-            </div>
-
-            {/* Password */}
-            <div>
-              <label className="block text-sm text-gray-700">Password</label>
-              <input
-                type="password"
-                name="password"
-                required
-                value={formData.password}
-                onChange={handleChange}
-                className="w-full px-4 py-2 rounded-xl border border-gray-300 text-gray-800 shadow-sm focus:ring-2 focus:ring-green-400 focus:outline-none"
-              />
-            </div>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full py-2 mt-4 bg-green-600 text-white rounded-xl font-semibold hover:bg-green-700 transition"
-            >
-              {loading ? 'Logging in...' : 'Log In'}
-            </button>
-          </form>
-
-          {/* Sign Up Suggestion */}
-          <div className="text-center mt-6 text-sm text-gray-800">
-            Don’t have an account?{' '}
-            <Link to="/signup" className="text-green-700 hover:underline font-semibold">
-              Sign up here
-            </Link>
           </div>
         </div>
       </main>

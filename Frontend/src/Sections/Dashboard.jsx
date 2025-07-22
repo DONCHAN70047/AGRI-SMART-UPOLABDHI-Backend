@@ -1,5 +1,6 @@
 import React from 'react'
 import Navbar from '../Components/Navbar'
+import Footer from '../Components/Footer';
 
 const Dashboard = () => {
     return (
@@ -14,6 +15,7 @@ const Dashboard = () => {
             <div className='pt-30 px-10'>
                 hello, you are in Dashboard
             </div>
+            <Footer />
         </div>
     )
 }

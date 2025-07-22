@@ -1,11 +1,8 @@
 import React, { useContext, useState, useEffect, useCallback } from 'react';
-import { NavLink, Link, useLocation, data } from 'react-router-dom';
+import { NavLink, Link, useLocation } from 'react-router-dom';
 import { UserContext } from '../context/UserContext';
 import Sign_out from './Sign_out';
 import { get_current_user } from './Functions';
-//import { NavLink, useLocation } from 'react-router';
-//import { NavLink, Link, useLocation } from 'react-router';
-
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -31,7 +28,7 @@ const Navbar = () => {
   console.log(user)
 
   return (
-    <nav className="w-[95%] fixed top-5 left-1/2 transform -translate-x-1/2 z-50 bg-white/10 backdrop-blur-md border-b border-white shadow-md rounded-2xl">
+    <nav className="w-[95%] fixed top-5 left-1/2 transform -translate-x-1/2 z-50 bg-black/30 backdrop-blur-md border border-zinc-800 shadow-md rounded-2xl">
       <div className="max-w-7xl mx-auto flex justify-between items-center px-4 py-3 md:px-6">
 
         {/* Logo */}
@@ -43,19 +40,25 @@ const Navbar = () => {
           />
         </NavLink>
 
-        {/* Desktop Nav Links */}
-        <ul className="hidden md:flex items-center gap-6 text-white font-medium">
-          {["Home", "Get your Map", "Weather", "Dashboard", "Crop Disease", "Nearby Market"].map((item, index) => (
-            <li key={index}>
-              <NavLink
-                to={`/${item.charAt(0).toUpperCase() + item.slice(1).toLowerCase().replace(/ /g, '_')}`}
-                className={`relative transition-all duration-200 ease-in-out hover:-translate-y-1 hover:text-green-400 after:absolute after:left-0 after:bottom-0 after:h-[3px] after:w-full after:rounded-full after:bg-green-500 after:opacity-0 hover:after:opacity-100 ${location.pathname === `/${item.charAt(0).toUpperCase() + item.slice(1).toLowerCase().replace(/ /g, '_')}` ? 'text-green-600' : 'text-white'}`}
-              >
-                {item}
-              </NavLink>
-            </li>
-          ))}
-        </ul>
+        {/* Desktop Nav Links - Button/Box Style */}
+        <div className="hidden md:flex items-center relative">
+          <ul className="flex items-center gap-4">
+            {["Home", "Get your Map", "Weather", "Dashboard", "Crop Disease", "Nearby Market"].map((item, index) => (
+              <li key={index}>
+                <NavLink
+                  to={`/${item.charAt(0).toUpperCase() + item.slice(1).toLowerCase().replace(/ /g, '_')}`}
+                  className={({ isActive }) =>
+                    `px-4 py-2 rounded-xl font-semibold transition 
+                    ${isActive ? 'bg-yellow-500 text-white' : 'bg-white/10 text-white hover:bg-yellow-400 hover:text-yellow-900'} 
+                    shadow border border-yellow-400`
+                  }
+                >
+                  {item}
+                </NavLink>
+              </li>
+            ))}
+          </ul>
+        </div>
 
         {/* Desktop Auth Buttons */}
         {user ? (
@@ -63,14 +66,14 @@ const Navbar = () => {
         ) : (
           <div className="hidden md:flex gap-3">
             <Link to="/login">
-              <button className="px-4 py-2 text-white border border-white rounded-xl transition hover:bg-white hover:text-green-700 hover:scale-105">
-                Log in
+              <button className="px-4 py-2 text-white border border-white rounded-xl transition hover:bg-white hover:text-yellow-700 hover:scale-105">
+                Log in...
               </button>
             </Link>
 
             <Link to="/signup">
-              <button className="px-4 py-2 bg-green-500 text-white rounded-xl transition hover:bg-green-600 hover:scale-105">
-                Sign up
+              <button className="px-4 py-2 bg-yellow-500 text-white rounded-xl transition hover:bg-yellow-600 hover:scale-105">
+                Sign up...
               </button>
             </Link>
           </div>
@@ -92,13 +95,13 @@ const Navbar = () => {
 
       {/* Mobile Dropdown */}
       {isOpen && (
-        <div className="md:hidden bg-white/10 backdrop-blur-md px-6 pb-4 pt-2 rounded-b-2xl shadow-lg">
+        <div className="md:hidden bg-black/30 backdrop-blur-md px-6 pb-4 pt-2 rounded-b-2xl shadow-lg">
           <ul className="flex flex-col gap-4 text-white font-medium">
             {["Home", "Get your Map", "Weather", "Dashboard", "Crop Disease", "Nearby Market"].map((item, index) => (
               <li key={index}>
                 <NavLink
                   to={`/${item.charAt(0).toUpperCase() + item.slice(1).toLowerCase().replace(/ /g, '_')}`}
-                  className={`block text-center hover:text-green-400 transition ${location.pathname === `/${item.charAt(0).toUpperCase() + item.slice(1).toLowerCase().replace(/ /g, '_')}` ? 'text-green-600' : 'text-white'}`}
+                  className={`block text-center hover:text-yellow-400 transition ${location.pathname === `/${item.charAt(0).toUpperCase() + item.slice(1).toLowerCase().replace(/ /g, '_')}` ? 'text-yellow-500' : 'text-white'}`}
                   onClick={() => setIsOpen(false)}
                 >
                   {item}
@@ -107,20 +110,21 @@ const Navbar = () => {
             ))}
           </ul>
 
-
           {user ? (
             <div><Sign_out /></div>
           ) : (
             <div className="flex flex-col gap-3 mt-4">
               <Link to="/login">
-                <button className="px-4 py-2 text-white border border-white rounded-xl transition hover:bg-white hover:text-green-700" onClick={() => setIsOpen(false)}>
+                <button className="px-4 py-2 text-white border border-white rounded-xl transition hover:bg-white hover:text-yellow-700" onClick={() => setIsOpen(false)}>
                   Log in
                 </button>
               </Link>
 
-              <button className="px-4 py-2 bg-green-500 text-white rounded-xl transition hover:bg-green-600">
-                Sign up
-              </button>
+              <Link to="/signup">
+                <button className="px-4 py-2 bg-yellow-500 text-white rounded-xl transition hover:bg-yellow-600">
+                  Sign up
+                </button>
+              </Link>
             </div>
           )}
         </div>
