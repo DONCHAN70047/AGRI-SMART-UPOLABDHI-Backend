@@ -1,13 +1,16 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import Navbar from "../Components/Navbar";
 import { CiLocationOn } from "react-icons/ci";
 import { get_lat_lon } from "../Operations/Lat_Lon";
+import { get_current_user, getWeatherStatus } from "../Components/Functions";
+import { UserContext } from "../context/UserContext";
 
 const Weather = () => {
   // State
   const [latitude, setLatitude] = useState("");
   const [longitude, setLongitude] = useState("");
+  const [weather_status, setWeather_status] = useState("")
   const [weather_data, setWeather_data] = useState({
     status: "",
     temp: 0.0,
@@ -26,16 +29,25 @@ const Weather = () => {
     location: "",
   });
 
+  const { user, setUser } = useContext(UserContext)
+  console.log(user)
+  console.log(latitude)
+  console.log(longitude)
+  console.log(weather_status)
+
   // Get Weather from Backend API
-  const get_current_weather = async () => {
+  const get_current_weather = useCallback(async () => {
     try {
-      const user_id = localStorage.getItem("user_id");
       const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/weather/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ user_id }),
+        body: JSON.stringify({
+          "user_id": user.id,
+          "lat": latitude,
+          "lon": longitude
+        }),
       });
 
       if (!response.ok) throw new Error("Failed to fetch weather");
@@ -63,7 +75,7 @@ const Weather = () => {
     } catch (err) {
       console.error("❌ Weather fetch error:", err);
     }
-  };
+  });
 
   // Get lat/lon from browser
   const getLocation = async () => {
@@ -75,10 +87,26 @@ const Weather = () => {
   // Helpers
   const kelvinToCelsius = (k) => (k - 273.15).toFixed(1);
 
+  // USE EFFECT
   useEffect(() => {
-    getLocation();
-    get_current_weather();
-  }, [latitude, longitude]);
+    const init = async () => {
+      const data = await get_current_user();
+      setUser(data);
+
+      getLocation(); // Trigger geolocation update
+      setWeather_status(getWeatherStatus(weather_data.min_temp, weather_data.max_temp, weather_data.humidity, weather_data.rain))
+    };
+
+    init();
+  }, []);
+
+  useEffect(() => {
+    if (user && latitude !== null && longitude !== null) {
+      get_current_weather();
+    }
+  }, [user, latitude, longitude]);
+
+
 
   return (
     <>
@@ -110,11 +138,11 @@ const Weather = () => {
               </div>
               <div>
                 <img
-                  src={`/${weather_data.status}.jpg`}
+                  src={`/${weather_status}.png`}
                   alt="weather_status"
-                  className="h-48 p-5"
+                  className="h-40 p-5"
                 />
-                <div className="w-full text-center p-1 text-2xl">{weather_data.status}</div>
+                <div className="w-full text-center p-1 text-xl">{weather_status}</div>
               </div>
             </div>
 

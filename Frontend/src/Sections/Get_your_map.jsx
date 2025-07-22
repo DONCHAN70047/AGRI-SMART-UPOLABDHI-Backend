@@ -12,6 +12,8 @@ const Get_your_map = () => {
   const [radius, setRadius] = useState('');
   const [user, setUser] = useState(null)
 
+  console.log(user)
+
   const mapRef = useRef(null);
   const polygonRef = useRef(null);
 
@@ -29,6 +31,7 @@ const Get_your_map = () => {
         lon: longitude,
       },
       polygon_arr: polygon_arr,
+      user_id: user.id
     };
 
     try {
@@ -122,6 +125,15 @@ const Get_your_map = () => {
     polygonRef.current = polygon;
     mapRef.current.fitBounds(polygon.getBounds());
   }, [radius, latitude, longitude]);
+
+  useEffect(() => {
+    const func = async () => {
+      const data = await get_current_user()
+      setUser(data)
+    }
+    func()
+  }, [])
+
 
   return (
     <div className="relative min-h-screen">

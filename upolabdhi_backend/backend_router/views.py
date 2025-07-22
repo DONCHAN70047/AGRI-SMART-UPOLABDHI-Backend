@@ -1,5 +1,5 @@
 import os
-import requests
+import requests # type: ignore
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
@@ -17,16 +17,20 @@ from rest_framework.parsers import MultiPartParser
 from rest_framework.decorators import parser_classes
 from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_201_CREATED, HTTP_500_INTERNAL_SERVER_ERROR
 from .MLModel.MLapp import predict_disease
+<<<<<<< HEAD
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
 
 
 
 import requests
+=======
+>>>>>>> 8de95fd338797d8048d14dab0091d0831d13d536
 from PIL import Image
+from pprint import pprint
 
 
-secure = os.environ.get('SECURE')
+secure = os.getenv('SECURE')
 
 # ............................................................... Mail Function ......................................
 def MailFunction(userMail, userName, password):
@@ -181,85 +185,16 @@ def sign_in(request):
 
 
     
-# ....................................................................... login, refresh & blocklist ...............................................
-@api_view(['POST'])
-def login(request):
-    username = request.data.get('username')
-    password = request.data.get('password')
-
-    user = authenticate(username=username, password=password)
-
-    if user is not None:
-        refresh = RefreshToken.for_user(user)
-        access_token = str(refresh.access_token)
-        refresh_token = str(refresh)
-
-        response = Response({"message": "Login successful"})
-
-        response.set_cookie(
-            key='access',
-            value=access_token,
-            httponly=True,
-            secure=secure,
-            samesite='Lax'
-        )
-        response.set_cookie(
-            key='refresh',
-            value=refresh_token,
-            httponly=True,
-            secure=secure,
-            samesite='Lax'
-        )
-
-        return response
-    else:
-        return Response({"error": "Invalid credentials"}, status=401)
-
-
-@api_view(['PUT'])
-def refresh(request):
-    refresh_token = request.COOKIES.get('refresh')
-
-    if not refresh_token:
-        return Response({"error": "Refresh token not found"}, status=400)
-
-    try:
-        token = RefreshToken(refresh_token)
-        access_token = str(token.access_token)
-
-        response = Response({"message": "Token refreshed successfully"})
-        response.set_cookie(
-            key='access',
-            value=access_token,
-            httponly=True,
-            secure=secure,
-            samesite='Lax'
-        )
-        return response
-
-    except TokenError:
-        return Response({"error": "Invalid or expired refresh token"}, status=401)
-
-
-@api_view(['DELETE'])
-def blacklist(request):
-    refresh_token = request.COOKIES.get('refresh')
-
-    if not refresh_token:
-        return Response({"error": "Refresh token not found"}, status=400)
-
-    try:
-        token = RefreshToken(refresh_token)
-        token.blacklist()  # Blacklist the refresh token
-
-        response = Response({"message": "Logged out successfully"})
-        response.delete_cookie('access')
-        response.delete_cookie('refresh')
-        return response
-
-    except TokenError:
-        return Response({"error": "Invalid or expired refresh token"}, status=400)
-# ....................................................................... login, refresh & blocklist ...............................................
+# ....................................................................... current user ...............................................
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def current_user(request):
+    user = request.user
+    return Response({
+        "id" : user.id,
+        "username": user.username
+    })
+# ....................................................................... current user ...............................................
 
 
 # .......................................... DisesDetection ...................................................
