@@ -1,5 +1,5 @@
 import os
-import requests # type: ignore
+import requests
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
@@ -29,21 +29,26 @@ def get_your_map(request):
     try :
         c = request.data.get('coords')
         p = request.data.get('polygon_arr')
-
+        id = request.data.get('user_id')
+        print(request.data)
         lat = c.get('lat')
         lon = c.get('lon')
 
         print("Get your map data came views sucessfully....")
         print("Latitude:", lat)
         print("Longitude:", lon)
+        print('user_id', id)
         print("Polygon:", p)
 
         try:
             remake = {
                 "latitude": lat,
                 "longitude": lon,
-                "poly_arr": p
+                "poly_arr": p,
+                "user_id": id
             }
+            print("Extracted user_id:", id, type(id))
+
         except KeyError as e:
             return Response({"error": f"Missing key: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -52,6 +57,9 @@ def get_your_map(request):
             serializer.save()
             print('Database save sucessfully... ')
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            print('Serializer errors:', serializer.errors)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     except Exception as e :
         #print("Error get_your_map:", str(e))
         return Response({"message": "Server error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -63,20 +71,22 @@ def get_your_map(request):
 #........................................................................... weather .....................................................................
 @api_view(['POST'])
 def weather(request):
+    print("view entered")
     user_id = request.data.get("user_id")
-    apiKey = os.environ.get('OPENWEATHER_API_KEY')
+    lat = request.data.get("lat")
+    lon = request.data.get("lon")
+    apiKey = os.getenv('OPENWEATHER_API_KEY')
 
-    if not user_id:
-        return Response({"error": "user_id is required"}, status=status.HTTP_400_BAD_REQUEST)
+    print("user id = ",user_id)
+    print("lat id = ",lat)
+    print("lon id = ",lon)
+    print("lon id = ",lon)
+    print("apiKey id = ",apiKey)
 
-    try:
-        target_user = Polygon.objects.get(user_id=user_id)
-    except Polygon.DoesNotExist:
-        return Response({"error": "Polygon for user not found"}, status=status.HTTP_404_NOT_FOUND)
+    if not all([user_id, lat, lon]):
+        return Response({"error": "user_id, lat, and lon are required"}, status=status.HTTP_400_BAD_REQUEST)
 
-    lat = target_user.latitude
-    lon = target_user.longitude
-
+    
     url = f'https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={apiKey}'
     response = requests.get(url)
 
@@ -111,6 +121,7 @@ def weather(request):
         serializer.save()
         return Response(weather_data, status=status.HTTP_200_OK)
     else:
+        print(serializer.errors)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 #........................................................................... weather .....................................................................
 
