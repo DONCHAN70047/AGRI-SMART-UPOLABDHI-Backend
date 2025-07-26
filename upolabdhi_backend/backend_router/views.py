@@ -19,6 +19,7 @@ from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_201_CREATED, HTTP_5
 from .MLModel.MLapp import predict_disease
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
+from google import genai
 
 
 
@@ -221,3 +222,72 @@ def predict_disease_from_image(request):
         return Response({"error": f"Prediction error: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 # .......................................... DisesDetection ...................................................
 
+
+@api_view(['POST'])
+def get_disease_details(request):
+
+    user_id = request.data.get('user_id')
+    crop_name = request.data.get('crop_name')
+    crop_disease = request.data.get('crop_disease')
+
+    prompt = (
+        "You are an agricultural expert who excels in disease detection and care. "
+        "You are given a crop name and its corresponding disease name. "
+        "Based on that data, you have to give the following information: Disease name, Crop affected, Scientific name, "
+        "Possible Causal Agent, 3 common symptoms for the disease, causes and risk factors, spread, treatment and cure. "
+        f"Data: Crop name = {crop_name}, Crop Disease = {crop_disease}. "
+        "Examples: "
+        "\n\n"
+        "Example 1:\n"
+        "Disease Name: Late Blight\n"
+        "Crop Affected: Potato\n"
+        "Scientific Name: Phytophthora infestans\n"
+        "Possible Causal Agent: Fungus-like Oomycete\n"
+        "3 Common Symptoms:\n"
+        "1. Water-soaked lesions on leaves that turn brown or black\n"
+        "2. White fungal growth under leaf surface in humid conditions\n"
+        "3. Dark brown or black patches on stems and tubers\n"
+        "Causes and Risk Factors:\n"
+        "- Cool and moist weather conditions\n"
+        "- Overcrowded planting and poor air circulation\n"
+        "- Infected seed tubers or plant debris left in the soil\n"
+        "Spread:\n"
+        "- Wind-borne spores and rain splash\n"
+        "- Contaminated tools, hands, and storage areas\n"
+        "- Survives in infected tubers and plant residue\n"
+        "Treatment and Cure:\n"
+        "- Apply protectant fungicides like Mancozeb or systemic fungicides such as Metalaxyl\n"
+        "- Remove and destroy infected plants immediately\n"
+        "- Practice crop rotation and use certified disease-free seed\n\n"
+        
+        "Example 2:\n"
+        "Disease Name: Bacterial Leaf Blight\n"
+        "Crop Affected: Rice\n"
+        "Scientific Name: Xanthomonas oryzae pv. oryzae\n"
+        "Possible Causal Agent: Bacteria\n"
+        "3 Common Symptoms:\n"
+        "1. Yellowing of leaf tips that spreads downward\n"
+        "2. Water-soaked lesions that become brown and dry\n"
+        "3. Seedling wilting in early stages (Kresek phase)\n"
+        "Causes and Risk Factors:\n"
+        "- High nitrogen fertilization\n"
+        "- Warm, wet climates and poor drainage\n"
+        "- Dense planting and contaminated irrigation\n"
+        "Spread:\n"
+        "- Through rain splash and irrigation water\n"
+        "- Insects, especially leaf hoppers\n"
+        "- Contaminated seeds or crop debris\n"
+        "Treatment and Cure:\n"
+        "- Use resistant rice varieties\n"
+        "- Apply copper-based bactericides or antibiotics under expert supervision\n"
+        "- Improve drainage and avoid over-fertilization\n"
+        "- Ensure field sanitation and remove infected material\n"
+    )
+
+
+    client = genai.Client()
+
+    response = client.models.generate_content(
+        model="gemini-2.5-flash", contents=prompt
+    )
+    print(response.text)

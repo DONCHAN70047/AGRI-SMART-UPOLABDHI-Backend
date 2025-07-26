@@ -12,6 +12,7 @@ urlpatterns = [
     path('get_your_map/', views.get_your_map, name="get_your_map"),
     path('weather/', views.weather, name="weather"),
     path('detect/', views.predict_disease_from_image, name="predict_disease_from_image"),
+    path('get_disease_details/', views.get_disease_details, name='get_disease_details'),
 
     path('sign_in/', views.sign_in, name="sign_in"),
     # path('log_in/', views.login, name="login"),
