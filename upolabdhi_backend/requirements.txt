@@ -22,3 +22,4 @@ libclang==16.0.6     # works well; 18.1.1 is fine too, but might be larger
 google-pasta==0.2.0
 flatbuffers==23.5.26
 optree==0.10.0
+python-dotenv==1.0.1
