@@ -1,50 +1,65 @@
-import numpy as np
-import pickle
-import gdown
+import os
 import io
+import pickle
+import numpy as np
+import gdown
+from PIL import Image
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing import image
-import os
 import google.generativeai as genai
 
+# Load environment variables
+from dotenv import load_dotenv
+load_dotenv()
+
+# Paths and base dir
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+MODEL_URL = "https://drive.google.com/uc?id=1JrIvT1aTT0cOo52ARHZskDI15WIXVrxn"
+MODEL_PATH = os.path.join(BASE_DIR, "temp_model.h5")
+CLASS_MAP_PATH = os.path.join(BASE_DIR, "ClassMapDisesDetectModel16.pkl")
 
-file_id = "1JrIvT1aTT0cOo52ARHZskDI15WIXVrxn"
-url = f"https://drive.google.com/uc?id={file_id}"
+# === Download model ===
+def download_model():
+    model_bytes = io.BytesIO()
+    gdown.download(MODEL_URL, output=model_bytes, quiet=False, fuzzy=True)
+    model_bytes.seek(0)
 
-model_bytes = io.BytesIO()
-gdown.download(url, output=model_bytes, quiet=False, fuzzy=True)
+    with open(MODEL_PATH, "wb") as f:
+        f.write(model_bytes.read())
 
-model_bytes.seek(0)
+# === Load model & class map ===
+download_model()
+model = load_model(MODEL_PATH)
+os.remove(MODEL_PATH)  # clean up after loading
 
-with open("temp_model.h5", "wb") as f:
-    f.write(model_bytes.read())
-
-model = load_model('temp_model.h5')
-os.remove("temp_model.h5")
-
-
-class_map_path = os.path.join(BASE_DIR, "ClassMapDisesDetectModel16.pkl")
-with open(class_map_path, 'rb') as f:
+with open(CLASS_MAP_PATH, 'rb') as f:
     class_indices = pickle.load(f)
 index_to_class = {v: k for k, v in class_indices.items()}
 
-
-def Sugesstion(DisesName):
+# === Gemini Suggestion Function ===
+def Sugesstion(disease_name: str) -> str:
     genai.configure(api_key=os.getenv("DisesSugesstionAPIKey"))
-    model = genai.GenerativeModel(model_name="models/gemini-1.5-flash")
-    response = model.generate_content(f"Our disease name is: {DisesName}. Please give me point-wise suggestions on how the disease happens and how to survive from it.")
-    return response.text
+    model = genai.GenerativeModel("models/gemini-1.5-flash")
+    response = model.generate_content(
+        f"""
+        Our disease name is: {disease_name}.
+        Please give me point-wise suggestions:
+        1. How this disease happens
+        2. How to prevent or cure it.
+        Respond concisely in bullet points.
+        """
+    )
+    return response.text.strip()
 
-
-def predict_disease(image_file):
-    img = image_file.resize((128, 128))
+# === Prediction Function ===
+def predict_disease(image_file: Image.Image) -> dict:
+    img = image_file.resize((128, 128)).convert("RGB")
     img_array = image.img_to_array(img) / 255.0
     img_array = np.expand_dims(img_array, axis=0)
 
     predictions = model.predict(img_array)
     predicted_index = np.argmax(predictions[0])
-    predicted_class = index_to_class[predicted_index]
+    predicted_class = index_to_class.get(predicted_index, "Unknown")
 
     suggestion_text = Sugesstion(predicted_class)
 
