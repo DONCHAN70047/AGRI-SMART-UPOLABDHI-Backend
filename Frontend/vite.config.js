@@ -7,7 +7,13 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
     host: true,
-    port: process.env.PORT || 5173
+    port: process.env.PORT || 5173,
+    
+    // ✅ Add this block to allow backend host
+    allowedHosts: [
+      'localhost',
+      'https://agri-smart-upolabdhi-backend-8.onrender.com'
+    ],
   },
   preview: {
     host: true,
