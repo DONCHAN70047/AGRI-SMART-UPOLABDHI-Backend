@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
+# Backend link :- https://agri-smart-upolabdhi-backend-8.onrender.com/
 
 import os
 from pathlib import Path
@@ -81,8 +82,15 @@ CORS_ALLOW_CREDENTIALS = True
 
 ROOT_URLCONF = 'upolabdhi_backend.urls'
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://agri-smart-upolabdhi-backend-8.onrender.com/",
+    "https://agri-smart-upolabdhi-backend-xbz4.onrender.com/",  
+]
+
+
 CORS_ALLOWED_ORIGINS = [
    "http://localhost:5173",
+   "https://agri-smart-upolabdhi-backend-xbz4.onrender.com/",
 ]
 
 REST_FRAMEWORK = {
@@ -174,4 +182,4 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")  
 
-PORT = os.environ.get('PORT', 8000)
+
