@@ -15,7 +15,7 @@ API_KEY = os.getenv("DisesSugesstionAPIKey")
 
 # === Paths and constants ===
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-MODEL_URL = "https://drive.google.com/uc?id=1JrIvT1aTT0cOo52ARHZskDI15WIXVrxn"
+MODEL_URL = "https://drive.google.com/uc?id=1FiSttTj-3mD_4AOGFMgoztoZ6wCaidaR"
 MODEL_PATH = os.path.join(BASE_DIR, "temp_model.h5")
 CLASS_MAP_PATH = os.path.join(BASE_DIR, "ClassMapDisesDetectModel16.pkl")
 
