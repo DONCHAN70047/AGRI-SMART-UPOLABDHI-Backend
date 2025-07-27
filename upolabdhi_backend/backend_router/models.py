@@ -33,3 +33,34 @@ class Weather(models.Model):
     class Meta:
         ordering = ['user_id']
 
+
+class Symptom(models.Model):
+    description = models.CharField(max_length=200)
+
+class RiskFactor(models.Model):
+    description = models.CharField(max_length=200)
+
+class PreventionMeasure(models.Model):
+    description = models.CharField(max_length=200)
+
+class SpreadMethod(models.Model):
+    description = models.CharField(max_length=200)
+
+class TreatmentCure(models.Model):
+    description = models.CharField(max_length=200)
+
+class CropDisease(models.Model):
+    user_id = models.IntegerField()
+    crop_affected = models.CharField(max_length=20)
+    disease_name = models.CharField(max_length=50)
+    possible_causal_agent = models.CharField(max_length=50)
+    scientific_name = models.CharField(max_length=50)
+
+    common_symptoms = models.ForeignKey(Symptom, related_name='disease_symptoms', on_delete=models.CASCADE)
+    risk_causes = models.ForeignKey(RiskFactor, related_name='disease_risks', on_delete=models.CASCADE)
+    prevention = models.ForeignKey(PreventionMeasure, related_name='disease_preventions', on_delete=models.CASCADE)
+    spread = models.ForeignKey(SpreadMethod, related_name='disease_spreads', on_delete=models.CASCADE)
+    treatment = models.ForeignKey(TreatmentCure, related_name='disease_treatments', on_delete=models.CASCADE)
+
+    class Meta:
+        ordering = ['user_id']

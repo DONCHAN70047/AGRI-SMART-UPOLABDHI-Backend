@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from backend_router.models import Polygon, Weather
+from backend_router.models import Polygon, Weather, CropDisease
 
 class PolygonSerializer(serializers.ModelSerializer):
     class Meta:
@@ -31,6 +31,11 @@ class WeatherSerializer(serializers.ModelSerializer):
     class Meta:
         model = Weather
         fields = ['user_id', 'status', 'location', 'temp', 'feels_like', 'min_temp', 'max_temp', 'wind_speed', 'wind_gust', 'wind_degree', 'pressure', 'humidity', 'sea_level', 'ground_level', 'rain', 'clouds']
-        read_only_fields = []
+        read_only_fields = ['user_id']
 
 
+class CropDiseaseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CropDisease
+        fields = '__all__'
+        read_only_fields = ['user_id']
