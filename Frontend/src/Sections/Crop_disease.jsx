@@ -1,12 +1,18 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import Navbar from '../Components/Navbar';
 import Footer from '../Components/Footer';
+import { Route } from 'react-router';
+import { UserContext } from '../context/UserContext';
 
 const Detection = () => {
   const [image, setImage] = useState(null);
   const [previewUrl, setPreviewUrl] = useState('');
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [crop, setCrop] = useState("potato");
+  const [disease, setDisease] = useState("late blight");
+
+  const {user, setUser} = useContext(UserContext)
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -18,28 +24,40 @@ const Detection = () => {
   };
 
   const handleDetect = async () => {
-    if (!image) return alert('📷 Please upload or capture a photo first');
+    // if (!image) return alert('📷 Please upload or capture a photo first');
 
-    setLoading(true);
+    // setLoading(true);
 
-    try {
-      const formData = new FormData();
-      formData.append('image', image); 
+    // try {
+    //   const formData = new FormData();
+    //   formData.append('image', image);
 
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/detect/`, {
-        method: 'POST',
-        body: formData,
-      });
+    //   const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/detect/`, {
+    //     method: 'POST',
+    //     body: formData,
+    //   });
 
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || 'Detection failed');
-      setResult(data);
-    } catch (err) {
-      console.error('Detection failed', err);
-      alert('❌ ' + err.message);
-    } finally {
-      setLoading(false);
-    }
+    //   const data = await response.json();
+    //   if (!response.ok) throw new Error(data.error || 'Detection failed');
+    //   setResult(data);
+    // } catch (err) {
+    //   console.error('Detection failed', err);
+    //   alert('❌ ' + err.message);
+    // } finally {
+    //   setLoading(false);
+    // }
+
+    console.log(crop, disease)
+    const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/get_disease_details/`, {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({user_id: user, crop_name: crop, crop_disease: disease}),
+    })
+    const result = await response.json()
+    const data = JSON.parse(result.replace(/```json|```/g, ""))
+    console.log(data)
   };
 
   return (
@@ -63,6 +81,36 @@ const Detection = () => {
             <p className="text-center text-gray-700">
               Upload or capture a plant image to detect any disease.
             </p>
+
+            {/* Inputs  */}
+            <div>
+              <div>
+                <select
+                  name="crop_name"
+                  id="crop-select"
+                  value={crop}
+                  onChange={(e) => setCrop(e.target.value)}
+                  className="border rounded-md px-4 py-2 w-full"
+                >
+                  <option value="potato">Potato</option>
+                  <option value="carrot">Carrot</option>
+                  <option value="tomato">Tomato</option>
+                </select>
+              </div>
+              <div>
+                <select
+                  name="disease_name"
+                  id="disease-select"
+                  value={disease}
+                  onChange={(e) => setDisease(e.target.value)}
+                  className="border rounded-md px-4 py-2 w-full"
+                >
+                  <option value="late blight">Late Blight</option>
+                  <option value="alternaria leaf blight">Alternaria Leaf Blight</option>
+                  <option value="early blight">Early Blight</option>
+                </select>
+              </div>
+            </div>
 
             {/* Upload Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
@@ -134,7 +182,7 @@ const Detection = () => {
       </div>
       <Footer />
     </div>
-    
+
   );
 };
 
