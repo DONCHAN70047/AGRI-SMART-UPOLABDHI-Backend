@@ -1,32 +1,34 @@
 import os
 import json
+import requests
 import requests # type: ignore
+from pprint import pprint
+from backend_router.models import Polygon, Weather, CropDisease
+from backend_router.serializer import PolygonSerializer, WeatherSerializer, CropDiseaseSerializer
+from django.contrib.auth import authenticate
+from django.contrib.auth.models import User
+from django.contrib.auth.hashers import make_password
+from django.conf import settings
+from django.core.mail import EmailMultiAlternatives
+
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from backend_router.models import Polygon, Weather
-from backend_router.serializer import PolygonSerializer, WeatherSerializer
-from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
-from django.contrib.auth.models import User
 from rest_framework.permissions import AllowAny
 from rest_framework.decorators import permission_classes
-from django.contrib.auth.hashers import make_password
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.permissions import AllowAny
 from rest_framework.parsers import MultiPartParser
 from rest_framework.decorators import parser_classes
 from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_201_CREATED, HTTP_500_INTERNAL_SERVER_ERROR
+
 # from .MLModel.MLapp import predict_disease
-from django.conf import settings
-from django.core.mail import EmailMultiAlternatives
 from google import genai
-
-
-
-import requests
 from PIL import Image
-from pprint import pprint
+
+
+
 
 
 secure = os.getenv('SECURE')
@@ -237,6 +239,7 @@ def get_disease_details(request):
 
     examples = [
         {
+            "Example 1:"
             "Disease Name": "Late Blight",
             "Crop Affected": "Potato",
             "Scientific Name": "",
@@ -268,6 +271,7 @@ def get_disease_details(request):
             ]
         },
         {
+            "Example 2:"
             "Disease Name": "Bacterial Leaf Blight",
             "Crop Affected": "Rice",
             "Scientific Name": "Xanthomonas oryzae pv. oryzae",
@@ -324,3 +328,45 @@ def get_disease_details(request):
     print(result)
 
     return Response(response.text)
+
+
+@api_view(['POST'])
+def upload_disease_details(request):
+
+    body = json.loads(request.body.decode('utf-8'))
+
+    user_id = body.get('user_id')
+    disease_data = body.get('data', {})
+
+    def to_description_list(lst):
+        return [{'description': item} for item in lst]
+
+    data = {
+        'user_id': user_id,
+        'crop_affected': disease_data.get('Crop Affected'),
+        'disease_name': disease_data.get('Disease Name'),
+        'possible_causal_agent': disease_data.get('Possible Causal Agent'),
+        'scientific_name': disease_data.get('Scientific Name'),
+        'common_symptoms': to_description_list(disease_data.get('3 Common Symptoms', [])),
+        'risk_causes': to_description_list(disease_data.get('Causes and Risk Factors', [])),
+        'prevention': to_description_list(disease_data.get('Prevention', [])),
+        'spread': to_description_list(disease_data.get('Spread', [])),
+        'treatment': to_description_list(disease_data.get('Treatment and Cure', [])),
+    }
+
+    serializer = CropDiseaseSerializer(data=data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response({"message": "Data saved successfully", "data": serializer.data}, status=201)
+    return Response({"message": "Invalid CropDisease Serializer", "errors": serializer.errors}, status=400)
+
+@api_view(['POST'])
+def fetch_disease_details(request):
+    user_id = request.body.get('user_id')
+
+    if not user_id:
+        return Response({"message": "Missing 'user_id' in query parameters"}, status=400)
+
+    diseases = CropDisease.objects.filter(user_id=user_id)
+    serializer = CropDiseaseSerializer(diseases, many=True)
+    return Response({"data": serializer.data}, status=200)

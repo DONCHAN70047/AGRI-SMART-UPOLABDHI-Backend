@@ -13,6 +13,8 @@ urlpatterns = [
     path('weather/', views.weather, name="weather"),
     # path('detect/', views.predict_disease_from_image, name="predict_disease_from_image"),
     path('get_disease_details/', views.get_disease_details, name='get_disease_details'),
+    path('upload_disease_details/', views.upload_disease_details, name='upload_disease_details'),
+    path('fetch_disease_details/', views.fetch_disease_details, name='fetch_disease_details'),
 
     path('sign_in/', views.sign_in, name="sign_in"),
     # path('log_in/', views.login, name="login"),

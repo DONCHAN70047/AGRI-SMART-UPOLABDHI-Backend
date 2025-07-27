@@ -3,6 +3,7 @@ import Navbar from '../Components/Navbar';
 import Footer from '../Components/Footer';
 import { Route } from 'react-router';
 import { UserContext } from '../context/UserContext';
+import { get_disease_details, upload_disease_details } from '../Components/Api_calls';
 
 const Detection = () => {
   const [image, setImage] = useState(null);
@@ -12,7 +13,7 @@ const Detection = () => {
   const [crop, setCrop] = useState("potato");
   const [disease, setDisease] = useState("late blight");
 
-  const {user, setUser} = useContext(UserContext)
+  const { user, setUser } = useContext(UserContext)
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -48,16 +49,14 @@ const Detection = () => {
     // }
 
     console.log(crop, disease)
-    const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/get_disease_details/`, {
-      method: 'POST',
-      headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({user_id: user, crop_name: crop, crop_disease: disease}),
-    })
-    const result = await response.json()
-    const data = JSON.parse(result.replace(/```json|```/g, ""))
+
+    const { response: getResponce, result: getResult } = await get_disease_details({ user_id: user, crop_name: crop, crop_disease: disease })
+    const data = JSON.parse(getResult.replace(/```json|```/g, ""))
     console.log(data)
+
+    const { response: uploadResponce, result: uploadResult } = await upload_disease_details({ user_id: user.id, data: data })
+
+
   };
 
   return (

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from backend_router.models import Polygon, Weather, CropDisease
+from backend_router.models import Polygon, Weather, CropDisease, Symptom, RiskFactor, SpreadMethod, TreatmentCure, PreventionMeasure
 
 class PolygonSerializer(serializers.ModelSerializer):
     class Meta:
@@ -34,8 +34,69 @@ class WeatherSerializer(serializers.ModelSerializer):
         read_only_fields = ['user_id']
 
 
+class SymptomSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Symptom
+        fields = ['description']
+
+class RiskFactorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RiskFactor
+        fields = ['description']
+
+class SpreadMethodSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SpreadMethod
+        fields = ['description']
+
+class TreatmentCureSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TreatmentCure
+        fields = ['description']
+
+class PreventionMeasureSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PreventionMeasure
+        fields = ['description']
+
 class CropDiseaseSerializer(serializers.ModelSerializer):
+    common_symptoms = SymptomSerializer(many=True)
+    risk_causes = RiskFactorSerializer(many=True)
+    prevention = PreventionMeasureSerializer(many=True)
+    spread = SpreadMethodSerializer(many=True)
+    treatment = TreatmentCureSerializer(many=True)
+
     class Meta:
         model = CropDisease
         fields = '__all__'
-        read_only_fields = ['user_id']
+
+    def create(self, validated_data):
+        symptoms = validated_data.pop('common_symptoms')
+        risks = validated_data.pop('risk_causes')
+        preventions = validated_data.pop('prevention')
+        spreads = validated_data.pop('spread')
+        treatments = validated_data.pop('treatment')
+
+        crop_disease = CropDisease.objects.create(**validated_data)
+
+        for symptom in symptoms:
+            s_obj, _ = Symptom.objects.get_or_create(**symptom)
+            crop_disease.common_symptoms.add(s_obj)
+
+        for risk in risks:
+            r_obj, _ = RiskFactor.objects.get_or_create(**risk)
+            crop_disease.risk_causes.add(r_obj)
+
+        for prev in preventions:
+            p_obj, _ = PreventionMeasure.objects.get_or_create(**prev)
+            crop_disease.prevention.add(p_obj)
+
+        for sp in spreads:
+            sp_obj, _ = SpreadMethod.objects.get_or_create(**sp)
+            crop_disease.spread.add(sp_obj)
+
+        for tr in treatments:
+            t_obj, _ = TreatmentCure.objects.get_or_create(**tr)
+            crop_disease.treatment.add(t_obj)
+
+        return crop_disease
