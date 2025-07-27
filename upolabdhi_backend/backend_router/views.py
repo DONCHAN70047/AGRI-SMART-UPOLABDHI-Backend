@@ -205,7 +205,7 @@ def current_user(request):
  def predict_disease_from_image(request):
      try:
          image_file = request.FILES.get('image')  
-         #print(image_file)
+         print(image_file)
      except KeyError:
          return Response({"error": "Missing 'file'"}, status=status.HTTP_400_BAD_REQUEST)
      if not image_file:
