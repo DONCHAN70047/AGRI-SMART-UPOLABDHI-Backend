@@ -7,7 +7,7 @@ For more information on this file, see
 https://docs.djangoproject.com/en/5.2/topics/settings/
 
 For the full list of settings and their values, see
-https://docs.djangoproject.com/en/5.2/ref/settings/
+https://docs.djangoproject.com/en/5.2/ref/settings
 """
 # Backend link :- https://agri-smart-upolabdhi-backend-8.onrender.com/
 
@@ -83,14 +83,14 @@ CORS_ALLOW_CREDENTIALS = True
 ROOT_URLCONF = 'upolabdhi_backend.urls'
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://agri-smart-upolabdhi-backend-8.onrender.com/",
-    "https://agri-smart-upolabdhi-backend-xbz4.onrender.com/",  
+    "https://agri-smart-upolabdhi-backend-8.onrender.com",
+    "https://agri-smart-upolabdhi-backend-xbz4.onrender.com",  
 ]
 
 
 CORS_ALLOWED_ORIGINS = [
    "http://localhost:5173",
-   "https://agri-smart-upolabdhi-backend-xbz4.onrender.com/",
+   "https://agri-smart-upolabdhi-backend-xbz4.onrender.com",
 ]
 
 REST_FRAMEWORK = {
