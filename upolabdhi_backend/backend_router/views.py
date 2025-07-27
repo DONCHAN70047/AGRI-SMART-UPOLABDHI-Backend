@@ -24,7 +24,7 @@ from rest_framework.decorators import parser_classes
 from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_201_CREATED, HTTP_500_INTERNAL_SERVER_ERROR
 
 # from .MLModel.MLapp import predict_disease
-from google import genai
+import google.generativeai as genai
 from PIL import Image
 
 
