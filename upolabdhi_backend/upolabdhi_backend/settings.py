@@ -91,7 +91,7 @@ CSRF_TRUSTED_ORIGINS = [
 
 CORS_ALLOWED_ORIGINS = [
    "http://localhost:5173",
-   "https://agri-smart-upolabdhi-backend-xbz4.onrender.com",
+   "https://agri-smart-upolabdhi-frontend-xbz4.onrender.com",    #URL
 ]
 
 REST_FRAMEWORK = {
