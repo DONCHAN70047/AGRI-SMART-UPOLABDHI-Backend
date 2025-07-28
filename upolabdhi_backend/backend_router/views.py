@@ -1,10 +1,10 @@
 import os
 import json
 import requests
-import requests # type: ignore
 from pprint import pprint
-from backend_router.models import Polygon, Weather, CropDisease
-from backend_router.serializer import PolygonSerializer, WeatherSerializer, CropDiseaseSerializer
+from backend_router import cloudinary
+from backend_router.models import Polygon, Weather, CropDisease, UploadedImage
+from backend_router.serializer import PolygonSerializer, WeatherSerializer, CropDiseaseSerializer, UploadedImageSerializer
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
@@ -19,19 +19,26 @@ from rest_framework.permissions import AllowAny
 from rest_framework.decorators import permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.permissions import AllowAny
-from rest_framework.parsers import MultiPartParser
+from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.decorators import parser_classes
 from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_201_CREATED, HTTP_500_INTERNAL_SERVER_ERROR
 
 # from .MLModel.MLapp import predict_disease
 import google.generativeai as genai
 from PIL import Image
-
-
-
+import cloudinary
+import cloudinary.uploader
+from cloudinary.utils import cloudinary_url
 
 
 secure = os.getenv('SECURE')
+# Configuration       
+cloudinary.config( 
+    cloud_name = "dsktyutef", 
+    api_key = "264461953814364", 
+    api_secret = "H6nmg4inVdwYmbE9cVKMPrT-8gM", # Click 'View API Keys' above to copy your API secret
+    secure=True
+)
 
 # ............................................................... Mail Function ......................................
 def MailFunction(userMail, userName, password):
@@ -199,30 +206,27 @@ def current_user(request):
 
 
 # .......................................... DisesDetection ...................................................
- @api_view(['POST'])
- @parser_classes([MultiPartParser])
- @permission_classes([AllowAny])
- def predict_disease_from_image(request):
-     try:
-         image_file = request.FILES.get('image')  
-         print(image_file)
-     except KeyError:
-         return Response({"error": "Missing 'file'"}, status=status.HTTP_400_BAD_REQUEST)
-     if not image_file:
-         return Response({"error": "Image not provided"}, status=200)
+# @api_view(['POST'])
+# @parser_classes([MultiPartParser])
+# @permission_classes([AllowAny])
+# def predict_disease_from_image(request):
+#     try:
+#         image_file = request.FILES.get('image')  
+#         print(image_file)
+#     except KeyError:
+#         return Response({"error": "Missing 'file'"}, status=status.HTTP_400_BAD_REQUEST)
+#     if not image_file:
+#         return Response({"error": "Image not provided"}, status=200)
+#     try:
+#         img = Image.open(image_file).convert("RGB")  
+#     except Exception as e:
+#         return Response({"error": f"Failed to load image: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
+#     try:
+#         result = predict_disease(img)  
+#         return Response(result, status=status.HTTP_200_OK)
 
-     try:
-         img = Image.open(image_file).convert("RGB")  
-     except Exception as e:
-         return Response({"error": f"Failed to load image: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
-
-     try:
-         result = predict_disease(img)  
-
-         return Response(result, status=status.HTTP_200_OK)
-
-     except Exception as e:
-         return Response({"error": f"Prediction error: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+#     except Exception as e:
+#         return Response({"error": f"Prediction error: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 # .......................................... DisesDetection ...................................................
 
 
@@ -370,3 +374,34 @@ def fetch_disease_details(request):
     diseases = CropDisease.objects.filter(user_id=user_id)
     serializer = CropDiseaseSerializer(diseases, many=True)
     return Response({"data": serializer.data}, status=200)
+
+@api_view(['POST'])
+@parser_classes([MultiPartParser, FormParser])
+def handle_image(request):
+    uploaded_file = request.FILES.get('image')
+
+    if not uploaded_file:
+        return Response({"error": "No image file provided."}, status=400)
+
+    try:
+        # Reset the pointer in case anything touched the file
+        uploaded_file.seek(0)
+
+        # Upload directly to Cloudinary
+        upload_result = cloudinary.uploader.upload(
+            uploaded_file,
+            folder="uploads/",  # optional Cloudinary folder
+            public_id=None,     # auto-generate name, or use a string to set your own
+            overwrite=True
+        )
+
+        cloudinary_url = upload_result.get("secure_url")
+
+        return Response({
+            "message": "Uploaded successfully",
+            "filename": uploaded_file.name,
+            "cloudinary_url": cloudinary_url
+        }, status=status.HTTP_201_CREATED)
+
+    except Exception as e:
+        return Response({"error": f"Cloudinary upload failed: {str(e)}"}, status=500)

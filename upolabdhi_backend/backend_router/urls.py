@@ -15,6 +15,7 @@ urlpatterns = [
     path('get_disease_details/', views.get_disease_details, name='get_disease_details'),
     path('upload_disease_details/', views.upload_disease_details, name='upload_disease_details'),
     path('fetch_disease_details/', views.fetch_disease_details, name='fetch_disease_details'),
+    path('handle_image/', views.handle_image, name='handle_image'),
 
     path('sign_in/', views.sign_in, name="sign_in"),
     # path('log_in/', views.login, name="login"),

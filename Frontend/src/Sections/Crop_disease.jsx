@@ -3,7 +3,7 @@ import Navbar from '../Components/Navbar';
 import Footer from '../Components/Footer';
 import { Route } from 'react-router';
 import { UserContext } from '../context/UserContext';
-import { get_disease_details, upload_disease_details } from '../Components/Api_calls';
+import { get_disease_details, handle_image, upload_disease_details } from '../Components/Api_calls';
 
 const Detection = () => {
   const [image, setImage] = useState(null);
@@ -25,36 +25,41 @@ const Detection = () => {
   };
 
   const handleDetect = async () => {
-    // if (!image) return alert('📷 Please upload or capture a photo first');
+    if (!image) return alert('📷 Please upload or capture a photo first');
 
-    // setLoading(true);
+    setLoading(true);
 
-    // try {
-    //   const formData = new FormData();
-    //   formData.append('image', image);
+    try {
+      const formData = new FormData();
+      formData.append('image', image);
 
-    //   const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/detect/`, {
-    //     method: 'POST',
-    //     body: formData,
-    //   });
+      console.log(formData)
 
-    //   const data = await response.json();
-    //   if (!response.ok) throw new Error(data.error || 'Detection failed');
-    //   setResult(data);
-    // } catch (err) {
-    //   console.error('Detection failed', err);
-    //   alert('❌ ' + err.message);
-    // } finally {
-    //   setLoading(false);
-    // }
+      const { result } = await handle_image(formData)
+      console.log(result)
 
-    console.log(crop, disease)
+      // const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/detect/`, {
+      //   method: 'POST',
+      //   body: formData,
+      // });
 
-    const { response: getResponce, result: getResult } = await get_disease_details({ user_id: user, crop_name: crop, crop_disease: disease })
-    const data = JSON.parse(getResult.replace(/```json|```/g, ""))
-    console.log(data)
+      // const data = await response.json();
+      // if (!response.ok) throw new Error(data.error || 'Detection failed');
+      // setResult(data);
+    } catch (err) {
+      console.error('Detection failed', err);
+      alert('❌ ' + err.message);
+    } finally {
+      setLoading(false);
+    }
 
-    const { response: uploadResponce, result: uploadResult } = await upload_disease_details({ user_id: user.id, data: data })
+    // console.log(crop, disease)
+
+    // const { response: getResponce, result: getResult } = await get_disease_details({ user_id: user, crop_name: crop, crop_disease: disease })
+    // const data = JSON.parse(getResult.replace(/```json|```/g, ""))
+    // console.log(data)
+
+    // const { response: uploadResponce, result: uploadResult } = await upload_disease_details({ user_id: user.id, data: data })
 
 
   };

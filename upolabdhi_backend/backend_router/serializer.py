@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from backend_router.models import Polygon, Weather, CropDisease, Symptom, RiskFactor, SpreadMethod, TreatmentCure, PreventionMeasure
+from backend_router.models import Polygon, Weather, CropDisease, Symptom, RiskFactor, SpreadMethod, TreatmentCure, PreventionMeasure, UploadedImage
 
 class PolygonSerializer(serializers.ModelSerializer):
     class Meta:
@@ -100,3 +100,8 @@ class CropDiseaseSerializer(serializers.ModelSerializer):
             crop_disease.treatment.add(t_obj)
 
         return crop_disease
+    
+class UploadedImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UploadedImage
+        fields = ['id', 'image', 'uploaded_at']

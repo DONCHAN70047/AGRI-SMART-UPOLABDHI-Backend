@@ -23,3 +23,13 @@ export const upload_disease_details = async (body) => {
     const result = await response.json();
     return { response, result };
 };
+
+export const handle_image = async (body) => {
+    const response = await fetch("http://localhost:8000/api/handle_image/", {
+        method: "POST",
+        body: body,
+    });
+
+    const result = await response.json();
+    return { response, result }
+}

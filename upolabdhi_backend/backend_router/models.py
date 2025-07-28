@@ -60,3 +60,7 @@ class CropDisease(models.Model):
     prevention = models.ManyToManyField(PreventionMeasure)
     spread = models.ManyToManyField(SpreadMethod)
     treatment = models.ManyToManyField(TreatmentCure)
+
+class UploadedImage(models.Model):
+    image = models.ImageField(upload_to='uploads/')
+    uploaded_at = models.DateTimeField(auto_now_add=True)
