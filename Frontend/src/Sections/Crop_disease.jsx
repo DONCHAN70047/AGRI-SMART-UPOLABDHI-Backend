@@ -38,14 +38,14 @@ const Detection = () => {
       const { result } = await handle_image(formData)
       console.log(result)
 
-      // const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/detect/`, {
-      //   method: 'POST',
-      //   body: formData,
-      // });
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/detect/`, {
+        method: 'POST',
+        body: formData,
+      });
 
-      // const data = await response.json();
-      // if (!response.ok) throw new Error(data.error || 'Detection failed');
-      // setResult(data);
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || 'Detection failed');
+        setResult(data);
     } catch (err) {
       console.error('Detection failed', err);
       alert('❌ ' + err.message);
@@ -53,13 +53,13 @@ const Detection = () => {
       setLoading(false);
     }
 
-    // console.log(crop, disease)
+      console.log(crop, disease)
 
-    // const { response: getResponce, result: getResult } = await get_disease_details({ user_id: user, crop_name: crop, crop_disease: disease })
-    // const data = JSON.parse(getResult.replace(/```json|```/g, ""))
-    // console.log(data)
+      const { response: getResponce, result: getResult } = await get_disease_details({ user_id: user, crop_name: crop, crop_disease: disease })
+      const data = JSON.parse(getResult.replace(/```json|```/g, ""))
+      console.log(data)
 
-    // const { response: uploadResponce, result: uploadResult } = await upload_disease_details({ user_id: user.id, data: data })
+      const { response: uploadResponce, result: uploadResult } = await upload_disease_details({ user_id: user.id, data: data })
 
 
   };
