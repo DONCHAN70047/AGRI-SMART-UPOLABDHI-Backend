@@ -35,7 +35,11 @@ DEBUG = os.getenv('DEBUG')
 pprint(DEBUG)
 
 # ALLOWED_HOSTS = ["http://localhost:5173", "localhost"]
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = [
+    "agri-smart-upolabdhi-backend-8.onrender.com",
+    "agri-smart-upolabdhi-backend-xbz4.onrender.com",
+    "agri-smart-upolabdhi-frontend-xbz4.onrender.com",  # ✅ Add frontend
+]
 pprint(ALLOWED_HOSTS)
 
 #CORS_ALLOW_CREDENTIALS = True  # since you're using cookies for auth
@@ -85,7 +89,8 @@ ROOT_URLCONF = 'upolabdhi_backend.urls'
 
 CSRF_TRUSTED_ORIGINS = [
     "https://agri-smart-upolabdhi-backend-8.onrender.com",
-    "https://agri-smart-upolabdhi-backend-xbz4.onrender.com",  
+    "https://agri-smart-upolabdhi-backend-xbz4.onrender.com",
+    "https://agri-smart-upolabdhi-frontend-xbz4.onrender.com",  
 ]
 
 
@@ -93,6 +98,7 @@ CORS_ALLOWED_ORIGINS = [
    "http://localhost:5173",
    "https://agri-smart-upolabdhi-frontend-xbz4.onrender.com",    #URL
 ]
+CORS_ALLOW_CREDENTIALS = True
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
