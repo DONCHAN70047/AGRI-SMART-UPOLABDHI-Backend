@@ -29,6 +29,10 @@ from PIL import Image
 import cloudinary
 import cloudinary.uploader
 from cloudinary.utils import cloudinary_url
+from backend_router.MLModel.MLapp import predict_disease
+
+
+
 
 
 secure = os.getenv('SECURE')
@@ -206,10 +210,30 @@ def current_user(request):
 
 
 # .......................................... DisesDetection ...................................................
-# @api_view(['POST'])
-# @parser_classes([MultiPartParser])
-# @permission_classes([AllowAny])
-# def predict_disease_from_image(request):
+@api_view(['POST'])
+@parser_classes([MultiPartParser])
+@permission_classes([AllowAny])
+def predict_disease_from_image(request):
+    try:
+        image_file = request.FILES.get('image')  
+        print(image_file)
+    except KeyError:
+        return Response({"error": "Missing 'file'"}, status=status.HTTP_400_BAD_REQUEST)
+    if not image_file:
+        return Response({"error": "Image not provided"}, status=200)
+    try:
+        img = Image.open(image_file).convert("RGB")  
+    except Exception as e:
+        return Response({"error": f"Failed to load image: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
+    try:
+        result = predict_disease(img)  
+        return Response(result, status=status.HTTP_200_OK)
+    except Exception as e:
+         return Response({"error": f"Prediction error: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+#@api_view(['POST'])
+#@parser_classes([MultiPartParser])
+#@permission_classes([AllowAny])
+#def predict_disease_from_image(request):
 #     try:
 #         image_file = request.FILES.get('image')  
 #         print(image_file)
@@ -217,16 +241,8 @@ def current_user(request):
 #         return Response({"error": "Missing 'file'"}, status=status.HTTP_400_BAD_REQUEST)
 #     if not image_file:
 #         return Response({"error": "Image not provided"}, status=200)
-#     try:
-#         img = Image.open(image_file).convert("RGB")  
-#     except Exception as e:
-#         return Response({"error": f"Failed to load image: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
-#     try:
-#         result = predict_disease(img)  
-#         return Response(result, status=status.HTTP_200_OK)
 
-#     except Exception as e:
-#         return Response({"error": f"Prediction error: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+     
 # .......................................... DisesDetection ...................................................
 
 
