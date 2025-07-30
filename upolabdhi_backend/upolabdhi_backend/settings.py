@@ -15,6 +15,7 @@ import os
 from pathlib import Path
 from dotenv import load_dotenv
 from pprint import pprint
+import dj_database_url
 
 load_dotenv()
 
@@ -28,19 +29,15 @@ print(BASE_DIR)
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv('SECRET_KEY')
-pprint(SECRET_KEY)
+print(SECRET_KEY)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG')
-pprint(DEBUG)
+print(DEBUG)
 
 # ALLOWED_HOSTS = ["http://localhost:5173", "localhost"]
-ALLOWED_HOSTS = [
-    "agri-smart-upolabdhi-backend-8.onrender.com",
-    "agri-smart-upolabdhi-backend-xbz4.onrender.com",
-    "agri-smart-upolabdhi-frontend-xbz4.onrender.com",  # ✅ Add frontend
-]
-pprint(ALLOWED_HOSTS)
+ALLOWED_HOSTS = ['*']
+print(ALLOWED_HOSTS)
 
 #CORS_ALLOW_CREDENTIALS = True  # since you're using cookies for auth
 
@@ -89,16 +86,14 @@ ROOT_URLCONF = 'upolabdhi_backend.urls'
 
 CSRF_TRUSTED_ORIGINS = [
     "https://agri-smart-upolabdhi-backend-8.onrender.com",
-    "https://agri-smart-upolabdhi-backend-xbz4.onrender.com",
-    "https://agri-smart-upolabdhi-frontend-xbz4.onrender.com",  
+    "https://agri-smart-upolabdhi-backend-xbz4.onrender.com",  
 ]
 
 
 CORS_ALLOWED_ORIGINS = [
    "http://localhost:5173",
-   "https://agri-smart-upolabdhi-frontend-xbz4.onrender.com",    #URL
+   "https://agri-smart-upolabdhi-backend-xbz4.onrender.com",
 ]
-CORS_ALLOW_CREDENTIALS = True
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
@@ -136,6 +131,13 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+############ DONCHAN CHANGE #########
+database_url = os.environ.get('DATABASE_URL')
+DATABASES['default'] = dj_database_url.parse(database_url)
+
+############## DONCHAN CHANGE #########
+
 
 
 # Password validation
