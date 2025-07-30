@@ -35,8 +35,13 @@ print(SECRET_KEY)
 DEBUG = os.getenv('DEBUG')
 print(DEBUG)
 
-# ALLOWED_HOSTS = ["http://localhost:5173", "localhost"]
-ALLOWED_HOSTS = ['*']
+# ALLOWED_HOSTS = ["http://localhost:5173", "localhost"]  # *
+ALLOWED_HOSTS = [
+    "https://agri-smart-upolabdhi-backend-xbz4.onrender.com", 
+    "http://localhost:5173/", 
+    "http://10.76.51.202:5173/"
+]
+
 print(ALLOWED_HOSTS)
 
 #CORS_ALLOW_CREDENTIALS = True  # since you're using cookies for auth
@@ -85,8 +90,9 @@ CORS_ALLOW_CREDENTIALS = True
 ROOT_URLCONF = 'upolabdhi_backend.urls'
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://agri-smart-upolabdhi-backend-8.onrender.com",
     "https://agri-smart-upolabdhi-backend-xbz4.onrender.com",  
+    "http://localhost:5173", 
+    "http://10.76.51.202:5173"
 ]
 
 
