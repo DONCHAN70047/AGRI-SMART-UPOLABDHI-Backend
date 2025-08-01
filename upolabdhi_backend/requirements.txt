@@ -26,12 +26,12 @@ cloudinary==1.44.1
 
 
 # TensorFlow & ML
-tensorflow==2.15.0
+tensorflow==2.13.0
 tensorflow-estimator==2.15.0
 tensorflow-io-gcs-filesystem==0.31.0
 tensorboard==2.15.1
 tensorboard-data-server==0.7.2
-keras==2.15.0
+keras==2.13.1
 h5py==3.14.0
 libclang==16.0.6
 numpy==1.24.4
