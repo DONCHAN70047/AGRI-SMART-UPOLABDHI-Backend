@@ -31,7 +31,7 @@ const Signup = () => {
         email: formData.email,
       };
 
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/sign_in/`, {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/sign_in/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
