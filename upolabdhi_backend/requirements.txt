@@ -34,7 +34,7 @@ tensorboard-data-server==0.7.2
 keras==2.13.1
 h5py==3.14.0
 libclang==16.0.6
-numpy==1.24.4
+numpy==1.24.3
 ml-dtypes==0.2.0
 opt-einsum==3.3.0
 gast==0.4.0
