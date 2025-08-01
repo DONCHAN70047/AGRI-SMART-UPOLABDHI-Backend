@@ -30,7 +30,7 @@ def download_model():
 # === Load model and class index map ===
 download_model()
 try:
-    model = load_model(MODEL_PATH)
+    model = load_model(MODEL_PATH, compile=False)
 except Exception as e:
     raise RuntimeError("Failed to load Keras model.") from e
 finally:
