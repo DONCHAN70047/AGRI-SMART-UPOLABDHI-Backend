@@ -50,7 +50,7 @@ libclang==16.0.6
 ml-dtypes==0.2.0
 numpy==1.24.4
 opt-einsum==3.3.0
-tensorboard==2.15.1
+tensorboard==2.10.1
 tensorboard-data-server==0.7.2
 tensorflow==2.10.1
 tensorflow-estimator==2.15.0
