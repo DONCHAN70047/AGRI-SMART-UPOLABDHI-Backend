@@ -27,7 +27,7 @@ cloudinary==1.44.1
 
 # TensorFlow & ML
 tensorflow==2.13.0
-tensorflow-estimator==2.15.0
+tensorflow-estimator==2.13.0
 tensorflow-io-gcs-filesystem==0.31.0
 tensorboard==2.15.1
 tensorboard-data-server==0.7.2
@@ -38,6 +38,10 @@ numpy==1.24.3
 ml-dtypes==0.2.0
 opt-einsum==3.3.0
 gast==0.4.0
+Pillow
+gdown
+google-generativeai
+python-dotenv
 
 # Google Generative AI & Auth
 google-generativeai==0.5.4
