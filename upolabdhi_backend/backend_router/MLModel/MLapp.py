@@ -29,15 +29,19 @@ def download_model():
     print("✅ Model downloaded successfully.")
 
 # === Load model and class index map ===
-try:
-    download_model()
-    model = load_model(MODEL_PATH, compile=False)
-    print("✅ Model loaded successfully.")
-except Exception as e:
-    raise RuntimeError(f"❌ Failed to load Keras model: {e}")
-finally:
-    if os.path.exists(MODEL_PATH):
-        os.remove(MODEL_PATH)
+def load_model_from_file():
+    try:
+        download_model()
+        model_loaded = load_model(MODEL_PATH, compile=False)  # ✅ Compatible with .h5 format
+        print("✅ Model loaded successfully.")
+        return model_loaded
+    except Exception as e:
+        raise RuntimeError(f"❌ Failed to load Keras model: {e}")
+    finally:
+        if os.path.exists(MODEL_PATH):
+            os.remove(MODEL_PATH)
+
+model = load_model_from_file()
 
 # === Load class mapping ===
 try:
