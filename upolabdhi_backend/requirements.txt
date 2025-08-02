@@ -30,7 +30,7 @@ tensorflow-estimator==2.15.0
 tensorflow-io-gcs-filesystem==0.31.0
 tensorboard>=2.15.0,<2.16
 tensorboard-data-server>=0.7.0,<0.8.0
-keras==3.0.5
+keras==2.15.0
 h5py==3.14.0
 libclang==16.0.6
 numpy==1.26.4
@@ -81,6 +81,7 @@ pyasn1_modules==0.4.2
 # ================= Database =================
 dj-database-url==2.1.0
 psycopg2-binary==2.9.10
+
 
 
 
