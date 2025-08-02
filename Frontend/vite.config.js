@@ -7,9 +7,9 @@ export default defineConfig({
   server: {
     host: true,
     port: process.env.PORT || 5173,
-    
-    // ✅ Add this line:
-    allowedHosts: ['https://agri-smart-upolabdhi-backend-4-i6y6.onrender.com/']
+
+    // ✅ Use only the hostname, no protocol or slash
+    allowedHosts: ['agri-smart-upolabdhi-backend-4-i6y6.onrender.com']
   },
   preview: {
     host: true,
