@@ -59,7 +59,7 @@ const Detection = () => {
 
     } catch (err) {
       console.error('Detection failed', err);
-      alert('❌ ' + err.message);
+      //... We accept this another method after ...
     } finally {
       setLoading(false);
     }
