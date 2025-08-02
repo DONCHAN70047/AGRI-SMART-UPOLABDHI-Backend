@@ -6,6 +6,7 @@ import gdown
 from PIL import Image
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing import image
+from tensorflow.keras.layers import InputLayer
 import google.generativeai as genai
 from dotenv import load_dotenv
 
@@ -21,18 +22,16 @@ CLASS_MAP_PATH = os.path.join(BASE_DIR, "ClassMapDisesDetectModel16.pkl")
 
 # === Download model from Google Drive ===
 def download_model():
-    model_bytes = io.BytesIO()
-    gdown.download(MODEL_URL, output=model_bytes, quiet=False, fuzzy=True)
-    model_bytes.seek(0)
-    with open(MODEL_PATH, "wb") as f:
-        f.write(model_bytes.read())
+    if os.path.exists(MODEL_PATH):
+        os.remove(MODEL_PATH)
+    gdown.download(MODEL_URL, output=MODEL_PATH, quiet=False, fuzzy=True)
 
 # === Load model and class index map ===
 download_model()
 try:
-    model = load_model(MODEL_PATH, compile=False)
+    model = load_model(MODEL_PATH, compile=False, custom_objects={"InputLayer": InputLayer})
 except Exception as e:
-    raise RuntimeError("Failed to load Keras model.") from e
+    raise RuntimeError("❌ Failed to load Keras model: " + str(e))
 finally:
     if os.path.exists(MODEL_PATH):
         os.remove(MODEL_PATH)
@@ -45,14 +44,14 @@ index_to_class = {v: k for k, v in class_indices.items()}
 # === Generate suggestion using Gemini ===
 def Sugesstion(disease_name: str) -> str:
     genai.configure(api_key=API_KEY)
-    model = genai.GenerativeModel(model_name="gemini-1.5-flash")
-    response = model.generate_content(
+    gemini = genai.GenerativeModel(model_name="gemini-1.5-flash")
+    response = gemini.generate_content(
         f"""
-        Our disease name is: {disease_name}.
-        Please give me point-wise suggestions:
-        1. How this disease happens
+        Disease name: {disease_name}
+        Please provide:
+        1. How this disease occurs.
         2. How to prevent or cure it.
-        Respond concisely in bullet points.
+        Keep the response short and in bullet points.
         """
     )
     return response.text.strip()
