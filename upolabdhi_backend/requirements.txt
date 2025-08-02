@@ -27,6 +27,7 @@ cloudinary==1.44.1
 # ================= TensorFlow & ML =================
 tensorflow==2.15.0
 tf2onnx
+onnxruntime
 tensorflow-estimator==2.15.0
 tensorflow-io-gcs-filesystem==0.31.0
 tensorboard>=2.15.0,<2.16
@@ -82,6 +83,7 @@ pyasn1_modules==0.4.2
 # ================= Database =================
 dj-database-url==2.1.0
 psycopg2-binary==2.9.10
+
 
 
 
