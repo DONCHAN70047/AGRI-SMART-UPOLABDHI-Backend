@@ -1,12 +1,12 @@
 import os
 import pickle
 import numpy as np
-import gdown
 from PIL import Image
 from tensorflow.keras.models import load_model
-from tensorflow.keras.preprocessing import image
+from tensorflow.keras.preprocessing import image as keras_image
 import google.generativeai as genai
 from dotenv import load_dotenv
+import gdown
 
 # === Load environment variables ===
 load_dotenv()
@@ -26,13 +26,13 @@ def download_model():
         print("📥 Downloading model from Google Drive...")
         gdown.download(MODEL_URL, output=MODEL_PATH, quiet=False, fuzzy=True)
 
-# === Load model and class index mapping ===
+# === Load model and class mapping ===
 download_model()
 try:
     model = load_model(MODEL_PATH)
     print("✅ Model loaded successfully.")
 except Exception as e:
-    raise RuntimeError("❌ Failed to load Keras model.") from e
+    raise RuntimeError(f"❌ Failed to load Keras model: {e}")
 
 try:
     with open(CLASS_MAP_PATH, "rb") as f:
@@ -41,36 +41,50 @@ try:
 except FileNotFoundError:
     raise FileNotFoundError(f"❌ Class mapping file not found: {CLASS_MAP_PATH}")
 
+# Reverse the class index mapping
 index_to_class = {v: k for k, v in class_indices.items()}
 
-# === Get suggestion from Gemini API ===
+# === Get Gemini AI suggestions ===
 def get_suggestion(disease_name: str) -> str:
     genai.configure(api_key=API_KEY)
-    gemini_model = genai.GenerativeModel("gemini-1.5-flash")
+    model_gemini = genai.GenerativeModel("gemini-1.5-flash")
 
     prompt = f"""
-    Disease Name: {disease_name}
+    Disease: {disease_name}
     Please provide:
-    • How this disease occurs
-    • How to prevent or treat it
-    Respond in 4-5 short bullet points only.
+    • Causes
+    • Prevention
+    • Cure or treatment
+    • Environmental factors
+    • Suggested actions
+    Format the response as 4-5 bullet points.
     """
-    response = gemini_model.generate_content(prompt)
-    return response.text.strip()
+    try:
+        response = model_gemini.generate_content(prompt)
+        return response.text.strip()
+    except Exception as e:
+        print(f"⚠️ Gemini API Error: {e}")
+        return "Gemini API failed to provide suggestions."
 
 # === Predict disease from image ===
 def predict_disease(image_file: Image.Image) -> dict:
-    img = image_file.resize((128, 128)).convert("RGB")
-    img_array = image.img_to_array(img) / 255.0
-    img_array = np.expand_dims(img_array, axis=0)
+    try:
+        img = image_file.resize((128, 128)).convert("RGB")
+        img_array = keras_image.img_to_array(img) / 255.0
+        img_array = np.expand_dims(img_array, axis=0)
 
-    predictions = model.predict(img_array)
-    predicted_index = int(np.argmax(predictions[0]))
-    predicted_class = index_to_class.get(predicted_index, "Unknown")
+        predictions = model.predict(img_array)
+        predicted_index = int(np.argmax(predictions[0]))
+        predicted_class = index_to_class.get(predicted_index, "Unknown")
 
-    suggestion_text = get_suggestion(predicted_class)
+        suggestion_text = get_suggestion(predicted_class)
 
-    return {
-        "disease": predicted_class,
-        "suggestion": suggestion_text.split("\n")
-    }
+        return {
+            "disease": predicted_class,
+            "suggestion": suggestion_text.split("\n")
+        }
+
+    except Exception as e:
+        return {
+            "error": f"Prediction failed: {str(e)}"
+        }
