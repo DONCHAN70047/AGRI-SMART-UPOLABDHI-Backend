@@ -33,13 +33,13 @@ tensorboard-data-server>=0.7.0,<0.8.0
 keras==3.0.5
 h5py==3.14.0
 libclang==16.0.6
-numpy==1.24.3
+numpy==1.26.4
 ml-dtypes==0.2.0
 opt-einsum==3.3.0
 gast==0.4.0
 
 # ================= ML Utilities =================
-Pillow==10.3.0
+pillow==10.2.0
 gdown==5.1.0
 
 # ================= Google Generative AI & Auth =================
@@ -81,4 +81,5 @@ pyasn1_modules==0.4.2
 # ================= Database =================
 dj-database-url==2.1.0
 psycopg2-binary==2.9.10
+
 
