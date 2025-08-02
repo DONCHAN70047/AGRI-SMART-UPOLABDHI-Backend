@@ -18,7 +18,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 DEBUG = os.getenv('DEBUG') == 'True'
 
 ALLOWED_HOSTS = [
-    "agri-smart-upolabdhi-backend-8.onrender.com",
+    "https://agri-smart-upolabdhi-backend-2-ro6j.onrender.com",
     "agri-smart-upolabdhi-frontend-xbz4.onrender.com",
     "localhost",
     "127.0.0.1",
@@ -147,3 +147,4 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
+
