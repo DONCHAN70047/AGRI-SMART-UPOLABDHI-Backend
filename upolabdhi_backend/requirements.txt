@@ -27,7 +27,7 @@ cloudinary==1.44.1
 # ================= TensorFlow & ML =================
 tensorflow==2.15.0
 tf2onnx
-onnxruntime
+onnxruntime==1.17.3
 tensorflow-estimator==2.15.0
 tensorflow-io-gcs-filesystem==0.31.0
 tensorboard>=2.15.0,<2.16
@@ -39,6 +39,9 @@ numpy==1.26.4
 ml-dtypes==0.2.0
 opt-einsum==3.3.0
 gast==0.4.0
+python-dotenv
+google-generativeai
+requests
 
 # ================= ML Utilities =================
 pillow==10.2.0
@@ -83,6 +86,7 @@ pyasn1_modules==0.4.2
 # ================= Database =================
 dj-database-url==2.1.0
 psycopg2-binary==2.9.10
+
 
 
 
