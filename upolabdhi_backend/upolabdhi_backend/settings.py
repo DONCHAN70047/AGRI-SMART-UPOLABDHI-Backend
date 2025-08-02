@@ -109,13 +109,13 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOWED_ORIGINS = [
-    "https://agri-smart-upolabdhi-frontend-xbz4.onrender.com",
+    "https://agri-smart-upolabdhi-backend-4-i6y6.onrender.com",
     "http://localhost:5173",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://agri-smart-upolabdhi-frontend-xbz4.onrender.com",
-    "https://agri-smart-upolabdhi-backend-8.onrender.com",
+    "https://agri-smart-upolabdhi-backend-4-i6y6.onrender.com",
+    "https://agri-smart-upolabdhi-backend-3-w22q.onrender.com",
 ]
 
 CORS_ALLOW_METHODS = [
@@ -144,5 +144,6 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
+
 
 
